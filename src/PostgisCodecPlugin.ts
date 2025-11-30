@@ -143,7 +143,7 @@ export const PostgisCodecPlugin: GraphileConfig.Plugin = {
       // Hook into attribute creation to replace codecs with the correct modifier-specific ones
       // This is necessary because PostGraphile caches codecs by typeId only, not by typeId + modifier,
       // so all columns with the same base type get the same cached codec (usually the unconstrained one).
-      async pgCodecs_attribute(info, event) {
+      async pgCodecs_attribute(info: any, event: any) {
         const { attribute, pgAttribute, serviceName } = event;
         const attributeCodec = attribute.codec;
         
