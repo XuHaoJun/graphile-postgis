@@ -119,7 +119,8 @@ export function validateGeoJSON(
   if (expectedType && value.type !== expectedType) {
     errors.push({
       field: "type",
-      message: `Expected GeoJSON type '${expectedType}', but got '${value.type}'`,
+      message: `Expected GeoJSON type '${expectedType}', but got '${value.type}'. ` +
+        `Please provide GeoJSON with type '${expectedType}'.`,
       value: value.type,
     });
   }
@@ -131,6 +132,57 @@ export function validateGeoJSON(
   ) {
     const coordErrors = validateCoordinates(value.coordinates);
     errors.push(...coordErrors);
+  }
+
+  // Validate coordinate structure based on geometry type
+  if (value.coordinates !== undefined && errors.length === 0) {
+    const type = value.type;
+    const coords = value.coordinates;
+
+    // Validate nesting depth based on type
+    if (type === "Point") {
+      if (!Array.isArray(coords) || coords.length < 2) {
+        errors.push({
+          field: "coordinates",
+          message: "Point coordinates must be an array with at least 2 numbers [longitude, latitude]",
+          value: coords,
+        });
+      } else if (coords.some((c: any) => typeof c !== "number")) {
+        errors.push({
+          field: "coordinates",
+          message: "Point coordinates must contain only numbers",
+          value: coords,
+        });
+      }
+    } else if (type === "LineString") {
+      if (!Array.isArray(coords) || coords.length < 2) {
+        errors.push({
+          field: "coordinates",
+          message: "LineString coordinates must be an array with at least 2 coordinate pairs",
+          value: coords,
+        });
+      } else if (!coords.every((c: any) => Array.isArray(c) && c.length >= 2)) {
+        errors.push({
+          field: "coordinates",
+          message: "LineString coordinates must be an array of coordinate pairs [longitude, latitude]",
+          value: coords,
+        });
+      }
+    } else if (type === "Polygon") {
+      if (!Array.isArray(coords) || coords.length < 1) {
+        errors.push({
+          field: "coordinates",
+          message: "Polygon coordinates must be an array with at least one ring",
+          value: coords,
+        });
+      } else if (!coords.every((ring: any) => Array.isArray(ring) && ring.length >= 4)) {
+        errors.push({
+          field: "coordinates",
+          message: "Polygon coordinates must be an array of rings, each with at least 4 coordinate pairs",
+          value: coords,
+        });
+      }
+    }
   }
 
   return errors;

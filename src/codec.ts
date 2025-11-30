@@ -2,6 +2,8 @@ import type { PgCodec } from "@dataplan/pg";
 import type { SQL } from "pg-sql2";
 import { sql } from "pg-sql2";
 import { getGISTypeDetails } from "./utils";
+import { validateGeoJSON } from "./validation";
+import type { GISTypeDetails } from "./types";
 
 /**
  * Creates a PgCodec for a PostGIS geometry or geography type
@@ -19,9 +21,10 @@ export function createPostGISCodec(
   undefined,
   undefined
 > {
-  // Parse type modifier if available (for future use)
+  // Parse type modifier to get column constraints
+  let typeDetails: GISTypeDetails | null = null;
   if (typeModifier != null) {
-    getGISTypeDetails(typeModifier);
+    typeDetails = getGISTypeDetails(typeModifier);
   }
 
   // castFromPg: Generate SQL to convert geometry/geography to GeoJSON
@@ -48,24 +51,69 @@ export function createPostGISCodec(
 
   // toPg: Convert GeoJSON object to PostGIS geometry/geography
   // This will be used for mutations (inserts/updates)
+  // Returns a JSON string that will be used with ST_GeomFromGeoJSON in SQL
   const toPg = (value: any): string => {
     if (value === null || value === undefined) {
-      return "NULL";
+      // Null is handled separately by sqlValueWithCodec
+      throw new Error("toPg should not be called with null/undefined");
     }
-    // For now, we'll use ST_GeomFromGeoJSON
-    // In mutations, we'll need to handle SRID transformation
-    // This is a placeholder - actual implementation will be in the mutation handler
+
+    // Validate GeoJSON structure
+    const validationErrors = validateGeoJSON(value);
+    if (validationErrors.length > 0) {
+      const errorMessages = validationErrors
+        .map((err) => `${err.field}: ${err.message}`)
+        .join("; ");
+      throw new Error(
+        `Invalid GeoJSON: ${errorMessages}. ` +
+          `Please provide valid GeoJSON according to RFC 7946 specification.`
+      );
+    }
+
+    // Check if type matches column constraint (if any)
+    if (typeDetails && typeDetails.subtype !== 0) {
+      // Column has a specific geometry type constraint
+      const expectedTypes: Record<number, string> = {
+        1: "Point",
+        2: "LineString",
+        3: "Polygon",
+        4: "MultiPoint",
+        5: "MultiLineString",
+        6: "MultiPolygon",
+        7: "GeometryCollection",
+      };
+      const expectedType = expectedTypes[typeDetails.subtype];
+      if (expectedType && value.type !== expectedType) {
+        throw new Error(
+          `GeoJSON type mismatch: column expects '${expectedType}', but received '${value.type}'. ` +
+            `Please provide GeoJSON with type '${expectedType}'.`
+        );
+      }
+    }
+
+    // Extract SRID from GeoJSON if present (RFC 7946 doesn't include SRID, but some implementations do)
+    // For now, we'll assume GeoJSON coordinates are in the column's SRID
+    // SRID transformation will be handled by PostGIS if needed
+
+    // Return JSON string - this will be used with ST_GeomFromGeoJSON in SQL
+    // The actual SQL generation will wrap this with ST_GeomFromGeoJSON
     return JSON.stringify(value);
   };
 
   // Create codec object directly (t function is not exported from @dataplan/pg)
-  return {
+  const codec = {
     name: typeName,
     sqlType: sql.identifier(...typeName.split(".")),
     fromPg,
     toPg,
     attributes: undefined,
-    extensions: { oid: pgTypeOid },
+    extensions: {
+      oid: pgTypeOid,
+      // Mark this as a PostGIS codec for mutation handling
+      isPostGIS: true,
+      typeName,
+      typeDetails,
+    },
     castFromPg,
     listCastFromPg: undefined,
     executor: null,
@@ -81,6 +129,15 @@ export function createPostGISCodec(
     undefined,
     undefined,
     undefined
-  >;
+  > & {
+    extensions: {
+      oid: string | undefined;
+      isPostGIS: true;
+      typeName: typeof typeName;
+      typeDetails: GISTypeDetails | null;
+    };
+  };
+
+  return codec;
 }
 

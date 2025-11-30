@@ -4,6 +4,7 @@ import { PostgisExtensionPlugin } from "./PostgisExtensionPlugin";
 import { PostgisCodecPlugin } from "./PostgisCodecPlugin";
 import { PostgisScalarPlugin } from "./PostgisScalarPlugin";
 import { PostgisTypesPlugin } from "./PostgisTypesPlugin";
+import { PostgisMutationPlugin } from "./PostgisMutationPlugin";
 
 /**
  * Main PostGIS plugin preset for PostGraphile v5
@@ -33,6 +34,7 @@ export const postgisPlugin: GraphileConfig.Preset = {
     PostgisCodecPlugin,
     PostgisScalarPlugin,
     PostgisTypesPlugin,
+    PostgisMutationPlugin,
   ],
 };
 
@@ -44,6 +46,7 @@ export { PostgisExtensionPlugin } from "./PostgisExtensionPlugin";
 export { PostgisCodecPlugin } from "./PostgisCodecPlugin";
 export { PostgisScalarPlugin } from "./PostgisScalarPlugin";
 export { PostgisTypesPlugin } from "./PostgisTypesPlugin";
+export { PostgisMutationPlugin } from "./PostgisMutationPlugin";
 
 // Export utilities
 export { getGISTypeDetails, getGISTypeModifier, getGISTypeName } from "./utils";
