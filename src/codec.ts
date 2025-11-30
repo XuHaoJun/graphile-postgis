@@ -42,21 +42,71 @@ export function createPostGISCodec(
     typeDetails = getGISTypeDetails(typeModifier);
   }
 
-  // castFromPg: Generate SQL to convert geometry/geography to GeoJSON
+  // Generate a unique codec name that includes the modifier
+  // This is critical because PostGraphile caches codecs by typeId only,
+  // not by typeId + modifier. By making each codec name unique, we ensure
+  // that different modifiers create different codecs.
+  let codecName: string = typeName;
+  if (typeDetails && typeDetails.subtype !== 0) {
+    // Include modifier in codec name to make it unique
+    // Format: geometry_point_xy_4326, geometry_linestring_z_0, etc.
+    const subtypeName = typeDetails.subtype === 1 ? "point" :
+                        typeDetails.subtype === 2 ? "linestring" :
+                        typeDetails.subtype === 3 ? "polygon" :
+                        typeDetails.subtype === 4 ? "multipoint" :
+                        typeDetails.subtype === 5 ? "multilinestring" :
+                        typeDetails.subtype === 6 ? "multipolygon" :
+                        typeDetails.subtype === 7 ? "geometrycollection" : "unknown";
+    const dimSuffix = (typeDetails.hasZ && typeDetails.hasM ? "_zm" :
+                       typeDetails.hasZ ? "_z" :
+                       typeDetails.hasM ? "_m" : "");
+    const sridSuffix = typeDetails.srid !== 0 ? `_${typeDetails.srid}` : "";
+    codecName = `${typeName}_${subtypeName}${dimSuffix}${sridSuffix}`;
+  } else if (typeModifier != null && typeModifier !== -1) {
+    // Has modifier but subtype is 0 (generic geometry) - include modifier in name
+    codecName = `${typeName}_mod_${typeModifier}`;
+  }
+
+  // castFromPg: Generate SQL to convert geometry/geography to a JSON object with geojson, srid, and coordinates
   const castFromPg = (fragment: SQL): SQL => {
-    // Use ST_AsGeoJSON to convert geometry/geography to GeoJSON text
-    // The result will be a JSON string that we'll parse in fromPg
-    return sql`ST_AsGeoJSON(${fragment})::text`;
+    // For Point types, also include x, y, z coordinates
+    // For other types, just include geojson and srid
+    if (typeDetails && typeDetails.subtype === 1) {
+      // Point type - include coordinates
+      return sql`json_build_object(
+        'geojson', ST_AsGeoJSON(${fragment})::json,
+        'srid', ST_SRID(${fragment}),
+        'x', ST_X(${fragment}),
+        'y', ST_Y(${fragment}),
+        'z', CASE WHEN ST_CoordDim(${fragment}) >= 3 THEN ST_Z(${fragment}) ELSE NULL END
+      )::text`;
+    } else {
+      // Other types - just geojson and srid
+      return sql`json_build_object(
+        'geojson', ST_AsGeoJSON(${fragment})::json,
+        'srid', ST_SRID(${fragment})
+      )::text`;
+    }
   };
 
-  // fromPg: Parse the GeoJSON JSON string returned from Postgres
+  // fromPg: Parse the JSON object returned from Postgres
   const fromPg = (value: string | null): any => {
-    if (value === null) {
+    if (value === null || value === undefined || value === "") {
       return null;
     }
     try {
-      // ST_AsGeoJSON returns a JSON string, parse it
-      const geojson = JSON.parse(value);
+      // Parse the JSON object containing { geojson, srid }
+      const parsed = JSON.parse(value);
+      
+      // Extract geojson and srid
+      const geojson = parsed.geojson;
+      const srid = parsed.srid;
+      
+      if (!geojson) {
+        // If geojson is missing but we have a value, it might be a null geometry
+        // Return null instead of throwing an error
+        return null;
+      }
       
       // Warn about large geometries (> 1MB serialized)
       const serializedSize = JSON.stringify(geojson).length;
@@ -68,10 +118,27 @@ export function createPostGISCodec(
         );
       }
       
-      return geojson;
+      // Return object with geojson, srid, and optionally x, y, z for GraphQL object types
+      const result: any = {
+        geojson,
+        srid: srid ?? 0,
+      };
+      
+      // Include x, y, z if present (for Point types)
+      if ('x' in parsed) {
+        result.x = parsed.x;
+      }
+      if ('y' in parsed) {
+        result.y = parsed.y;
+      }
+      if ('z' in parsed && parsed.z !== null) {
+        result.z = parsed.z;
+      }
+      
+      return result;
     } catch (e) {
       throw new Error(
-        `Failed to parse GeoJSON from PostGIS: ${e instanceof Error ? e.message : String(e)}`
+        `Failed to parse geometry data from PostGIS: ${e instanceof Error ? e.message : String(e)}`
       );
     }
   };
@@ -127,9 +194,16 @@ export function createPostGISCodec(
     return JSON.stringify(value);
   };
 
+  // Debug logging
+  if (typeDetails) {
+    console.log(`[codec] Created ${codecName} codec with typeDetails: subtype=${typeDetails.subtype}, hasZ=${typeDetails.hasZ}, hasM=${typeDetails.hasM}, srid=${typeDetails.srid}, modifier=${typeModifier}`);
+  } else {
+    console.log(`[codec] Created ${codecName} codec without typeDetails (unconstrained), modifier=${typeModifier}`);
+  }
+
   // Create codec object directly (t function is not exported from @dataplan/pg)
   const codec = {
-    name: typeName,
+    name: codecName,
     sqlType: sql.identifier(...typeName.split(".")),
     fromPg,
     toPg,

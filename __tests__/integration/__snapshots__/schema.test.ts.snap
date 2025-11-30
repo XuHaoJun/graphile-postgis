@@ -1,0 +1,1191 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PostGIS Schema Generation T017: GraphQL schema snapshot should generate schema with PostGIS types 1`] = `
+""""All input for the create \`TestGeometry\` mutation."""
+input CreateTestGeometryInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The \`TestGeometry\` to be created by this mutation."""
+  testGeometry: TestGeometryInput!
+}
+
+"""The output of our create \`TestGeometry\` mutation."""
+type CreateTestGeometryPayload {
+  """
+  The exact same \`clientMutationId\` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The \`TestGeometry\` that was created by this mutation."""
+  testGeometry: TestGeometry
+
+  """An edge for our \`TestGeometry\`. May be used by Relay 1."""
+  testGeometryEdge(
+    """The method to use when ordering \`TestGeometry\`."""
+    orderBy: [TestGeometriesOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): TestGeometriesEdge
+}
+
+"""All input for the create \`TestMutation\` mutation."""
+input CreateTestMutationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The \`TestMutation\` to be created by this mutation."""
+  testMutation: TestMutationInput!
+}
+
+"""The output of our create \`TestMutation\` mutation."""
+type CreateTestMutationPayload {
+  """
+  The exact same \`clientMutationId\` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The \`TestMutation\` that was created by this mutation."""
+  testMutation: TestMutation
+
+  """An edge for our \`TestMutation\`. May be used by Relay 1."""
+  testMutationEdge(
+    """The method to use when ordering \`TestMutation\`."""
+    orderBy: [TestMutationsOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): TestMutationsEdge
+}
+
+"""A location in a connection that can be used for resuming pagination."""
+scalar Cursor
+
+"""All input for the \`deleteTestGeometryById\` mutation."""
+input DeleteTestGeometryByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: Int!
+}
+
+"""All input for the \`deleteTestGeometry\` mutation."""
+input DeleteTestGeometryInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique \`ID\` which will identify a single \`TestGeometry\` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete \`TestGeometry\` mutation."""
+type DeleteTestGeometryPayload {
+  """
+  The exact same \`clientMutationId\` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedTestGeometryId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The \`TestGeometry\` that was deleted by this mutation."""
+  testGeometry: TestGeometry
+
+  """An edge for our \`TestGeometry\`. May be used by Relay 1."""
+  testGeometryEdge(
+    """The method to use when ordering \`TestGeometry\`."""
+    orderBy: [TestGeometriesOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): TestGeometriesEdge
+}
+
+"""All input for the \`deleteTestMutationById\` mutation."""
+input DeleteTestMutationByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: Int!
+}
+
+"""All input for the \`deleteTestMutation\` mutation."""
+input DeleteTestMutationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique \`ID\` which will identify a single \`TestMutation\` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete \`TestMutation\` mutation."""
+type DeleteTestMutationPayload {
+  """
+  The exact same \`clientMutationId\` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedTestMutationId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The \`TestMutation\` that was deleted by this mutation."""
+  testMutation: TestMutation
+
+  """An edge for our \`TestMutation\`. May be used by Relay 1."""
+  testMutationEdge(
+    """The method to use when ordering \`TestMutation\`."""
+    orderBy: [TestMutationsOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): TestMutationsEdge
+}
+
+"""
+The \`GeoJSON\` scalar type represents GeoJSON values as specified by [RFC 7946](https://tools.ietf.org/html/rfc7946).
+"""
+scalar GeoJSON
+
+"""Represents a LineString geometry."""
+type GeographyLineString implements GeometryInterface & GeometryXYInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """
+  An array of Point geometries representing the points in this LineString geometry.
+  """
+  points: [GeometryPoint!]!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""Represents a Point geometry."""
+type GeographyPoint implements GeometryInterface & GeometryXYInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+
+  """The x coordinate of this Point geometry."""
+  x: Float!
+
+  """The y coordinate of this Point geometry."""
+  y: Float!
+}
+
+"""Represents a Polygon geometry."""
+type GeographyPolygon implements GeometryInterface & GeometryXYInterface {
+  """The exterior ring of this Polygon geometry as a LineString."""
+  exterior: GeometryLineString!
+
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """
+  The interior rings (holes) of this Polygon geometry as an array of LineStrings.
+  """
+  interiors: [GeometryLineString!]!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""Represents an unconstrained geometry that can be any geometry type."""
+type Geometry implements GeometryInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""Represents a GeometryCollection geometry."""
+type GeometryCollection implements GeometryInterface & GeometryXYInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """
+  An array of geometry objects in this GeometryCollection. Each geometry implements GeometryInterface.
+  """
+  geometries: [GeometryInterface!]!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""
+Base interface for all PostGIS geometry types. All geometry types implement this interface.
+"""
+interface GeometryInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""Represents a LineString geometry."""
+type GeometryLineString implements GeometryInterface & GeometryXYInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """
+  An array of Point geometries representing the points in this LineString geometry.
+  """
+  points: [GeometryPoint!]!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""Represents a LineString with M coordinates geometry."""
+type GeometryLineStringM implements GeometryInterface & GeometryXYMInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """
+  An array of Point geometries representing the points in this LineString geometry.
+  """
+  points: [GeometryPoint!]!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""Represents a LineString with Z coordinates geometry."""
+type GeometryLineStringZ implements GeometryInterface & GeometryXYZInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """
+  An array of Point geometries representing the points in this LineString geometry.
+  """
+  points: [GeometryPoint!]!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""Represents a MultiLineString geometry."""
+type GeometryMultiLineString implements GeometryInterface & GeometryXYInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """An array of LineString geometries in this MultiLineString geometry."""
+  lineStrings: [GeometryLineString!]!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""Represents a MultiPoint geometry."""
+type GeometryMultiPoint implements GeometryInterface & GeometryXYInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """
+  An array of Point geometries representing the points in this MultiPoint geometry.
+  """
+  points: [GeometryPoint!]!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""Represents a MultiPolygon geometry."""
+type GeometryMultiPolygon implements GeometryInterface & GeometryXYInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """An array of Polygon geometries in this MultiPolygon geometry."""
+  polygons: [GeometryPolygon!]!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""Represents a Point geometry."""
+type GeometryPoint implements GeometryInterface & GeometryXYInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+
+  """The x coordinate of this Point geometry."""
+  x: Float!
+
+  """The y coordinate of this Point geometry."""
+  y: Float!
+}
+
+"""Represents a Point with M coordinates geometry."""
+type GeometryPointM implements GeometryInterface & GeometryXYMInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+
+  """The x coordinate of this Point geometry."""
+  x: Float!
+
+  """The y coordinate of this Point geometry."""
+  y: Float!
+}
+
+"""Represents a Point with Z coordinates geometry."""
+type GeometryPointZ implements GeometryInterface & GeometryXYZInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+
+  """The x coordinate of this Point geometry."""
+  x: Float!
+
+  """The y coordinate of this Point geometry."""
+  y: Float!
+
+  """The z coordinate of this Point geometry."""
+  z: Float!
+}
+
+"""Represents a Point with Z coordinates with M coordinates geometry."""
+type GeometryPointZM implements GeometryInterface & GeometryXYZMInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+
+  """The x coordinate of this Point geometry."""
+  x: Float!
+
+  """The y coordinate of this Point geometry."""
+  y: Float!
+
+  """The z coordinate of this Point geometry."""
+  z: Float!
+}
+
+"""Represents a Polygon geometry."""
+type GeometryPolygon implements GeometryInterface & GeometryXYInterface {
+  """The exterior ring of this Polygon geometry as a LineString."""
+  exterior: GeometryLineString!
+
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """
+  The interior rings (holes) of this Polygon geometry as an array of LineStrings.
+  """
+  interiors: [GeometryLineString!]!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""Represents a Polygon with Z coordinates geometry."""
+type GeometryPolygonZ implements GeometryInterface & GeometryXYZInterface {
+  """The exterior ring of this Polygon geometry as a LineString."""
+  exterior: GeometryLineString!
+
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """
+  The interior rings (holes) of this Polygon geometry as an array of LineStrings.
+  """
+  interiors: [GeometryLineString!]!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""All geometry XY types implement this interface."""
+interface GeometryXYInterface implements GeometryInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""All geometry XYM types implement this interface."""
+interface GeometryXYMInterface implements GeometryInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""All geometry XYZ types implement this interface."""
+interface GeometryXYZInterface implements GeometryInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""All geometry XYZM types implement this interface."""
+interface GeometryXYZMInterface implements GeometryInterface {
+  """Converts the object to GeoJSON format as specified by RFC 7946."""
+  geojson: GeoJSON!
+
+  """Spatial Reference System Identifier (SRID)."""
+  srid: Int!
+}
+
+"""
+The root mutation type which contains root level fields which mutate data.
+"""
+type Mutation {
+  """Creates a single \`TestGeometry\`."""
+  createTestGeometry(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateTestGeometryInput!
+  ): CreateTestGeometryPayload
+
+  """Creates a single \`TestMutation\`."""
+  createTestMutation(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateTestMutationInput!
+  ): CreateTestMutationPayload
+
+  """Deletes a single \`TestGeometry\` using its globally unique id."""
+  deleteTestGeometry(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteTestGeometryInput!
+  ): DeleteTestGeometryPayload
+
+  """Deletes a single \`TestGeometry\` using a unique key."""
+  deleteTestGeometryById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteTestGeometryByIdInput!
+  ): DeleteTestGeometryPayload
+
+  """Deletes a single \`TestMutation\` using its globally unique id."""
+  deleteTestMutation(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteTestMutationInput!
+  ): DeleteTestMutationPayload
+
+  """Deletes a single \`TestMutation\` using a unique key."""
+  deleteTestMutationById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteTestMutationByIdInput!
+  ): DeleteTestMutationPayload
+
+  """
+  Updates a single \`TestGeometry\` using its globally unique id and a patch.
+  """
+  updateTestGeometry(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateTestGeometryInput!
+  ): UpdateTestGeometryPayload
+
+  """Updates a single \`TestGeometry\` using a unique key and a patch."""
+  updateTestGeometryById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateTestGeometryByIdInput!
+  ): UpdateTestGeometryPayload
+
+  """
+  Updates a single \`TestMutation\` using its globally unique id and a patch.
+  """
+  updateTestMutation(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateTestMutationInput!
+  ): UpdateTestMutationPayload
+
+  """Updates a single \`TestMutation\` using a unique key and a patch."""
+  updateTestMutationById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateTestMutationByIdInput!
+  ): UpdateTestMutationPayload
+}
+
+"""An object with a globally unique \`ID\`."""
+interface Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, the cursor to continue."""
+  endCursor: Cursor
+
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: Cursor
+}
+
+"""The root query type which gives access points into the data universe."""
+type Query implements Node {
+  """Reads and enables pagination through a set of \`TestGeometry\`."""
+  allTestGeometries(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: TestGeometryCondition
+
+    """Only read the first \`n\` values of the set."""
+    first: Int
+
+    """Only read the last \`n\` values of the set."""
+    last: Int
+
+    """
+    Skip the first \`n\` values from our \`after\` cursor, an alternative to cursor
+    based pagination. May not be used with \`last\`.
+    """
+    offset: Int
+
+    """The method to use when ordering \`TestGeometry\`."""
+    orderBy: [TestGeometriesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): TestGeometriesConnection
+
+  """Reads and enables pagination through a set of \`TestMutation\`."""
+  allTestMutations(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: TestMutationCondition
+
+    """Only read the first \`n\` values of the set."""
+    first: Int
+
+    """Only read the last \`n\` values of the set."""
+    last: Int
+
+    """
+    Skip the first \`n\` values from our \`after\` cursor, an alternative to cursor
+    based pagination. May not be used with \`last\`.
+    """
+    offset: Int
+
+    """The method to use when ordering \`TestMutation\`."""
+    orderBy: [TestMutationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): TestMutationsConnection
+
+  """Fetches an object given its globally unique \`ID\`."""
+  node(
+    """The globally unique \`ID\`."""
+    nodeId: ID!
+  ): Node
+
+  """
+  The root query type must be a \`Node\` to work well with Relay 1 mutations. This just resolves to \`query\`.
+  """
+  nodeId: ID!
+
+  """
+  Exposes the root query type nested one level down. This is helpful for Relay 1
+  which can only query top level fields if they are in a particular form.
+  """
+  query: Query!
+
+  """Reads a single \`TestGeometry\` using its globally unique \`ID\`."""
+  testGeometry(
+    """
+    The globally unique \`ID\` to be used in selecting a single \`TestGeometry\`.
+    """
+    nodeId: ID!
+  ): TestGeometry
+
+  """Get a single \`TestGeometry\`."""
+  testGeometryById(id: Int!): TestGeometry
+
+  """Reads a single \`TestMutation\` using its globally unique \`ID\`."""
+  testMutation(
+    """
+    The globally unique \`ID\` to be used in selecting a single \`TestMutation\`.
+    """
+    nodeId: ID!
+  ): TestMutation
+
+  """Get a single \`TestMutation\`."""
+  testMutationById(id: Int!): TestMutation
+}
+
+"""A connection to a list of \`TestGeometry\` values."""
+type TestGeometriesConnection {
+  """
+  A list of edges which contains the \`TestGeometry\` and cursor to aid in pagination.
+  """
+  edges: [TestGeometriesEdge]!
+
+  """A list of \`TestGeometry\` objects."""
+  nodes: [TestGeometry]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* \`TestGeometry\` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A \`TestGeometry\` edge in the connection."""
+type TestGeometriesEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The \`TestGeometry\` at the end of the edge."""
+  node: TestGeometry
+}
+
+"""Methods to use when ordering \`TestGeometry\`."""
+enum TestGeometriesOrderBy {
+  GEOG_LINESTRING_ASC
+  GEOG_LINESTRING_DESC
+  GEOG_POINT_ASC
+  GEOG_POINT_DESC
+  GEOG_POLYGON_ASC
+  GEOG_POLYGON_DESC
+  GEOM_GEOMETRYCOLLECTION_ASC
+  GEOM_GEOMETRYCOLLECTION_DESC
+  GEOM_LINESTRINGM_ASC
+  GEOM_LINESTRINGM_DESC
+  GEOM_LINESTRINGZ_ASC
+  GEOM_LINESTRINGZ_DESC
+  GEOM_LINESTRING_ASC
+  GEOM_LINESTRING_DESC
+  GEOM_MULTILINESTRING_ASC
+  GEOM_MULTILINESTRING_DESC
+  GEOM_MULTIPOINT_ASC
+  GEOM_MULTIPOINT_DESC
+  GEOM_MULTIPOLYGON_ASC
+  GEOM_MULTIPOLYGON_DESC
+  GEOM_NULLABLE_ASC
+  GEOM_NULLABLE_DESC
+  GEOM_POINTM_ASC
+  GEOM_POINTM_DESC
+  GEOM_POINTZM_ASC
+  GEOM_POINTZM_DESC
+  GEOM_POINTZ_ASC
+  GEOM_POINTZ_DESC
+  GEOM_POINT_4326_ASC
+  GEOM_POINT_4326_DESC
+  GEOM_POINT_27700_ASC
+  GEOM_POINT_27700_DESC
+  GEOM_POINT_ASC
+  GEOM_POINT_DESC
+  GEOM_POLYGONZ_ASC
+  GEOM_POLYGONZ_DESC
+  GEOM_POLYGON_ASC
+  GEOM_POLYGON_DESC
+  GEOM_UNCONSTRAINED_ASC
+  GEOM_UNCONSTRAINED_DESC
+  ID_ASC
+  ID_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+type TestGeometry implements Node {
+  geogLinestring: GeographyLineString
+
+  """
+  An array of coordinate arrays representing the points in this LineString geometry.
+  """
+  geogLinestring_points: [[Float!]!]!
+  geogPoint: GeographyPoint
+  geogPolygon: GeographyPolygon
+
+  """
+  The exterior ring of this Polygon geometry as an array of coordinate arrays.
+  """
+  geogPolygon_exterior: [[Float!]!]!
+
+  """
+  The interior rings (holes) of this Polygon geometry as an array of coordinate arrays.
+  """
+  geogPolygon_interiors: [[[Float!]!]!]!
+  geomGeometrycollection: GeometryCollection
+
+  """An array of GeoJSON geometry objects in this GeometryCollection."""
+  geomGeometrycollection_geometries: [String!]!
+  geomLinestring: GeometryLineString
+
+  """
+  An array of coordinate arrays representing the points in this LineString geometry.
+  """
+  geomLinestring_points: [[Float!]!]!
+  geomLinestringm: GeometryLineStringM
+
+  """
+  An array of coordinate arrays representing the points in this LineString geometry.
+  """
+  geomLinestringm_points: [[Float!]!]!
+  geomLinestringz: GeometryLineStringZ
+
+  """
+  An array of coordinate arrays representing the points in this LineString geometry.
+  """
+  geomLinestringz_points: [[Float!]!]!
+  geomMultilinestring: GeometryMultiLineString
+
+  """
+  An array of LineString coordinate arrays in this MultiLineString geometry.
+  """
+  geomMultilinestring_lineStrings: [[[Float!]!]!]!
+  geomMultipoint: GeometryMultiPoint
+
+  """
+  An array of coordinate arrays representing the points in this MultiPoint geometry.
+  """
+  geomMultipoint_points: [[Float!]!]!
+  geomMultipolygon: GeometryMultiPolygon
+
+  """
+  An array of Polygon coordinate arrays (rings) in this MultiPolygon geometry.
+  """
+  geomMultipolygon_polygons: [[[[Float!]!]!]!]!
+  geomNullable: GeometryPoint
+  geomPoint: GeometryPoint
+  geomPoint4326: GeometryPoint
+  geomPoint27700: GeometryPoint
+  geomPointm: GeometryPointM
+  geomPointz: GeometryPointZ
+  geomPointzm: GeometryPointZM
+  geomPolygon: GeometryPolygon
+
+  """
+  The exterior ring of this Polygon geometry as an array of coordinate arrays.
+  """
+  geomPolygon_exterior: [[Float!]!]!
+
+  """
+  The interior rings (holes) of this Polygon geometry as an array of coordinate arrays.
+  """
+  geomPolygon_interiors: [[[Float!]!]!]!
+  geomPolygonz: GeometryPolygonZ
+
+  """
+  The exterior ring of this Polygon geometry as an array of coordinate arrays.
+  """
+  geomPolygonz_exterior: [[Float!]!]!
+
+  """
+  The interior rings (holes) of this Polygon geometry as an array of coordinate arrays.
+  """
+  geomPolygonz_interiors: [[[Float!]!]!]!
+  geomUnconstrained: Geometry
+  id: Int!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+}
+
+"""
+A condition to be used against \`TestGeometry\` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input TestGeometryCondition {
+  """Checks for equality with the object’s \`geogLinestring\` field."""
+  geogLinestring: GeoJSON
+
+  """Checks for equality with the object’s \`geogPoint\` field."""
+  geogPoint: GeoJSON
+
+  """Checks for equality with the object’s \`geogPolygon\` field."""
+  geogPolygon: GeoJSON
+
+  """Checks for equality with the object’s \`geomGeometrycollection\` field."""
+  geomGeometrycollection: GeoJSON
+
+  """Checks for equality with the object’s \`geomLinestring\` field."""
+  geomLinestring: GeoJSON
+
+  """Checks for equality with the object’s \`geomLinestringm\` field."""
+  geomLinestringm: GeoJSON
+
+  """Checks for equality with the object’s \`geomLinestringz\` field."""
+  geomLinestringz: GeoJSON
+
+  """Checks for equality with the object’s \`geomMultilinestring\` field."""
+  geomMultilinestring: GeoJSON
+
+  """Checks for equality with the object’s \`geomMultipoint\` field."""
+  geomMultipoint: GeoJSON
+
+  """Checks for equality with the object’s \`geomMultipolygon\` field."""
+  geomMultipolygon: GeoJSON
+
+  """Checks for equality with the object’s \`geomNullable\` field."""
+  geomNullable: GeoJSON
+
+  """Checks for equality with the object’s \`geomPoint\` field."""
+  geomPoint: GeoJSON
+
+  """Checks for equality with the object’s \`geomPoint4326\` field."""
+  geomPoint4326: GeoJSON
+
+  """Checks for equality with the object’s \`geomPoint27700\` field."""
+  geomPoint27700: GeoJSON
+
+  """Checks for equality with the object’s \`geomPointm\` field."""
+  geomPointm: GeoJSON
+
+  """Checks for equality with the object’s \`geomPointz\` field."""
+  geomPointz: GeoJSON
+
+  """Checks for equality with the object’s \`geomPointzm\` field."""
+  geomPointzm: GeoJSON
+
+  """Checks for equality with the object’s \`geomPolygon\` field."""
+  geomPolygon: GeoJSON
+
+  """Checks for equality with the object’s \`geomPolygonz\` field."""
+  geomPolygonz: GeoJSON
+
+  """Checks for equality with the object’s \`geomUnconstrained\` field."""
+  geomUnconstrained: GeoJSON
+
+  """Checks for equality with the object’s \`id\` field."""
+  id: Int
+}
+
+"""An input for mutations affecting \`TestGeometry\`"""
+input TestGeometryInput {
+  geogLinestring: GeoJSON
+  geogPoint: GeoJSON
+  geogPolygon: GeoJSON
+  geomGeometrycollection: GeoJSON
+  geomLinestring: GeoJSON
+  geomLinestringm: GeoJSON
+  geomLinestringz: GeoJSON
+  geomMultilinestring: GeoJSON
+  geomMultipoint: GeoJSON
+  geomMultipolygon: GeoJSON
+  geomNullable: GeoJSON
+  geomPoint: GeoJSON
+  geomPoint4326: GeoJSON
+  geomPoint27700: GeoJSON
+  geomPointm: GeoJSON
+  geomPointz: GeoJSON
+  geomPointzm: GeoJSON
+  geomPolygon: GeoJSON
+  geomPolygonz: GeoJSON
+  geomUnconstrained: GeoJSON
+  id: Int
+}
+
+"""
+Represents an update to a \`TestGeometry\`. Fields that are set will be updated.
+"""
+input TestGeometryPatch {
+  geogLinestring: GeoJSON
+  geogPoint: GeoJSON
+  geogPolygon: GeoJSON
+  geomGeometrycollection: GeoJSON
+  geomLinestring: GeoJSON
+  geomLinestringm: GeoJSON
+  geomLinestringz: GeoJSON
+  geomMultilinestring: GeoJSON
+  geomMultipoint: GeoJSON
+  geomMultipolygon: GeoJSON
+  geomNullable: GeoJSON
+  geomPoint: GeoJSON
+  geomPoint4326: GeoJSON
+  geomPoint27700: GeoJSON
+  geomPointm: GeoJSON
+  geomPointz: GeoJSON
+  geomPointzm: GeoJSON
+  geomPolygon: GeoJSON
+  geomPolygonz: GeoJSON
+  geomUnconstrained: GeoJSON
+  id: Int
+}
+
+type TestMutation implements Node {
+  area: GeometryPolygon
+
+  """
+  The exterior ring of this Polygon geometry as an array of coordinate arrays.
+  """
+  area_exterior: [[Float!]!]!
+
+  """
+  The interior rings (holes) of this Polygon geometry as an array of coordinate arrays.
+  """
+  area_interiors: [[[Float!]!]!]!
+  id: Int!
+  location: GeometryPoint
+  name: String
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+}
+
+"""
+A condition to be used against \`TestMutation\` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input TestMutationCondition {
+  """Checks for equality with the object’s \`area\` field."""
+  area: GeoJSON
+
+  """Checks for equality with the object’s \`id\` field."""
+  id: Int
+
+  """Checks for equality with the object’s \`location\` field."""
+  location: GeoJSON
+
+  """Checks for equality with the object’s \`name\` field."""
+  name: String
+}
+
+"""An input for mutations affecting \`TestMutation\`"""
+input TestMutationInput {
+  area: GeoJSON
+  id: Int
+  location: GeoJSON
+  name: String
+}
+
+"""
+Represents an update to a \`TestMutation\`. Fields that are set will be updated.
+"""
+input TestMutationPatch {
+  area: GeoJSON
+  id: Int
+  location: GeoJSON
+  name: String
+}
+
+"""A connection to a list of \`TestMutation\` values."""
+type TestMutationsConnection {
+  """
+  A list of edges which contains the \`TestMutation\` and cursor to aid in pagination.
+  """
+  edges: [TestMutationsEdge]!
+
+  """A list of \`TestMutation\` objects."""
+  nodes: [TestMutation]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* \`TestMutation\` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A \`TestMutation\` edge in the connection."""
+type TestMutationsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The \`TestMutation\` at the end of the edge."""
+  node: TestMutation
+}
+
+"""Methods to use when ordering \`TestMutation\`."""
+enum TestMutationsOrderBy {
+  AREA_ASC
+  AREA_DESC
+  ID_ASC
+  ID_DESC
+  LOCATION_ASC
+  LOCATION_DESC
+  NAME_ASC
+  NAME_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""All input for the \`updateTestGeometryById\` mutation."""
+input UpdateTestGeometryByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: Int!
+
+  """
+  An object where the defined keys will be set on the \`TestGeometry\` being updated.
+  """
+  testGeometryPatch: TestGeometryPatch!
+}
+
+"""All input for the \`updateTestGeometry\` mutation."""
+input UpdateTestGeometryInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique \`ID\` which will identify a single \`TestGeometry\` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the \`TestGeometry\` being updated.
+  """
+  testGeometryPatch: TestGeometryPatch!
+}
+
+"""The output of our update \`TestGeometry\` mutation."""
+type UpdateTestGeometryPayload {
+  """
+  The exact same \`clientMutationId\` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The \`TestGeometry\` that was updated by this mutation."""
+  testGeometry: TestGeometry
+
+  """An edge for our \`TestGeometry\`. May be used by Relay 1."""
+  testGeometryEdge(
+    """The method to use when ordering \`TestGeometry\`."""
+    orderBy: [TestGeometriesOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): TestGeometriesEdge
+}
+
+"""All input for the \`updateTestMutationById\` mutation."""
+input UpdateTestMutationByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: Int!
+
+  """
+  An object where the defined keys will be set on the \`TestMutation\` being updated.
+  """
+  testMutationPatch: TestMutationPatch!
+}
+
+"""All input for the \`updateTestMutation\` mutation."""
+input UpdateTestMutationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique \`ID\` which will identify a single \`TestMutation\` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the \`TestMutation\` being updated.
+  """
+  testMutationPatch: TestMutationPatch!
+}
+
+"""The output of our update \`TestMutation\` mutation."""
+type UpdateTestMutationPayload {
+  """
+  The exact same \`clientMutationId\` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The \`TestMutation\` that was updated by this mutation."""
+  testMutation: TestMutation
+
+  """An edge for our \`TestMutation\`. May be used by Relay 1."""
+  testMutationEdge(
+    """The method to use when ordering \`TestMutation\`."""
+    orderBy: [TestMutationsOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): TestMutationsEdge
+}"
+`;

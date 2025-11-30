@@ -26,10 +26,12 @@ describe("PostGIS Mutation Integration Tests", () => {
         mutation {
           createTestMutation(
             input: {
-              name: "Test Location"
-              location: {
-                type: "Point"
-                coordinates: [30.0, 10.0]
+              testMutation: {
+                name: "Test Location"
+                location: {
+                  type: "Point"
+                  coordinates: [30.0, 10.0]
+                }
               }
             }
           ) {
@@ -71,10 +73,12 @@ describe("PostGIS Mutation Integration Tests", () => {
         mutation {
           createTestMutation(
             input: {
-              name: "Original Location"
-              location: {
-                type: "Point"
-                coordinates: [30.0, 10.0]
+              testMutation: {
+                name: "Original Location"
+                location: {
+                  type: "Point"
+                  coordinates: [30.0, 10.0]
+                }
               }
             }
           ) {
@@ -94,7 +98,7 @@ describe("PostGIS Mutation Integration Tests", () => {
           updateTestMutationById(
             input: {
               id: ${recordId}
-              patch: {
+              testMutationPatch: {
                 location: {
                   type: "Point"
                   coordinates: [40.0, 20.0]
@@ -134,10 +138,12 @@ describe("PostGIS Mutation Integration Tests", () => {
         mutation {
           createTestMutation(
             input: {
-              name: "Location to Null"
-              location: {
-                type: "Point"
-                coordinates: [30.0, 10.0]
+              testMutation: {
+                name: "Location to Null"
+                location: {
+                  type: "Point"
+                  coordinates: [30.0, 10.0]
+                }
               }
             }
           ) {
@@ -157,7 +163,7 @@ describe("PostGIS Mutation Integration Tests", () => {
           updateTestMutationById(
             input: {
               id: ${recordId}
-              patch: {
+              testMutationPatch: {
                 location: null
               }
             }
@@ -188,10 +194,12 @@ describe("PostGIS Mutation Integration Tests", () => {
         mutation {
           createTestMutation(
             input: {
-              name: "SRID Test"
-              location: {
-                type: "Point"
-                coordinates: [30.0, 10.0]
+              testMutation: {
+                name: "SRID Test"
+                location: {
+                  type: "Point"
+                  coordinates: [30.0, 10.0]
+                }
               }
             }
           ) {
@@ -223,10 +231,12 @@ describe("PostGIS Mutation Integration Tests", () => {
         mutation {
           createTestMutation(
             input: {
-              name: "Invalid GeoJSON"
-              location: {
-                type: "Point"
-                coordinates: "not an array"
+              testMutation: {
+                name: "Invalid GeoJSON"
+                location: {
+                  type: "Point"
+                  coordinates: "not an array"
+                }
               }
             }
           ) {
@@ -250,10 +260,12 @@ describe("PostGIS Mutation Integration Tests", () => {
         mutation {
           createTestMutation(
             input: {
-              name: "Invalid Type"
-              location: {
-                type: "InvalidType"
-                coordinates: [30.0, 10.0]
+              testMutation: {
+                name: "Invalid Type"
+                location: {
+                  type: "InvalidType"
+                  coordinates: [30.0, 10.0]
+                }
               }
             }
           ) {

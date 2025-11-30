@@ -1,5 +1,6 @@
 import type { GraphileConfig } from "graphile-config";
 import { EXPORTABLE } from "graphile-build";
+import type { Step } from "grafast";
 import { GIS_SUBTYPE } from "./constants";
 
 const { version } = require("../package.json");
@@ -28,6 +29,87 @@ export const PostgisMultiPointFieldsPlugin: GraphileConfig.Plugin = {
         const objectScope = scope as any;
         const isPgClassType = objectScope.isPgClassType;
         const pgCodec = objectScope.pgCodec;
+        const isPostGISType = objectScope.isPostGISType;
+        const isGeometryType = objectScope.isGeometryType;
+        const subtype = objectScope.subtype;
+
+        // Process geometry types (GeometryMultiPoint, etc.)
+        if (isPostGISType && isGeometryType && subtype === GIS_SUBTYPE.MultiPoint) {
+          const typeName = (context.Self as any)?.name || 'unknown';
+          console.log(`[PostgisMultiPointFieldsPlugin] ✓ Adding points field to MultiPoint geometry type: ${typeName}`);
+          const { graphql } = build;
+          const { GraphQLList, GraphQLNonNull } = graphql;
+
+          const newFields: Record<string, any> = {};
+          const geometryPointType = build.getTypeByName("GeometryPoint") as any;
+
+          // Add points field - returns array of GeometryPoint objects
+          newFields["points"] = fieldWithHooks(
+            {
+              fieldName: "points",
+            } as any,
+            {
+              description: build.wrapDescription(
+                `An array of Point geometries representing the points in this MultiPoint geometry.`,
+                "field"
+              ),
+              type: new GraphQLNonNull(
+                new GraphQLList(
+                  new GraphQLNonNull(geometryPointType)
+                )
+              ),
+              plan: EXPORTABLE(
+                () =>
+                  function plan($source: any): Step {
+                    // $source is the geometry object from the codec: { geojson, srid }
+                    // Return the full geometry object so we can access both geojson and srid in resolve
+                    return $source as Step;
+                  },
+                []
+              ),
+              resolve: EXPORTABLE(
+                () =>
+                  function resolve(parent: any) {
+                    if (!parent || !parent.geojson) {
+                      return null;
+                    }
+                    // parent is the full geometry object: { geojson, srid }
+                    const geojson = parent.geojson;
+                    const srid = parent.srid || 0;
+                    
+                    // MultiPoint GeoJSON format: { type: "MultiPoint", coordinates: [[x1, y1], [x2, y2], ...] }
+                    if (typeof geojson === "object" && geojson.type === "MultiPoint" && Array.isArray(geojson.coordinates)) {
+                      // Create GeometryPoint objects for each coordinate
+                      return geojson.coordinates.map((coord: number[]) => {
+                        const [x, y, z] = coord;
+                        return {
+                          geojson: {
+                            type: "Point",
+                            coordinates: coord,
+                          },
+                          srid: srid,
+                          x: x,
+                          y: y,
+                          ...(z !== undefined ? { z: z } : {}),
+                        };
+                      });
+                    }
+                    return null;
+                  },
+                []
+              ),
+            }
+          );
+
+          if (Object.keys(newFields).length > 0) {
+            console.log(`[PostgisMultiPointFieldsPlugin] Added ${Object.keys(newFields).length} fields to ${typeName}`);
+            return build.extend(
+              fields,
+              newFields,
+              "Adding PostGIS MultiPoint points field to geometry type"
+            );
+          }
+        }
 
         // Only process table types with attributes
         if (!isPgClassType || !pgCodec?.attributes) {

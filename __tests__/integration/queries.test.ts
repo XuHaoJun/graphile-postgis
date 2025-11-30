@@ -24,7 +24,7 @@ describe("PostGIS Query Integration Tests", () => {
     it("should query Point geometry and return GeoJSON", async () => {
       const query = `
         query {
-          testGeometries {
+          allTestGeometries {
             nodes {
               id
               geomPoint {
@@ -40,11 +40,11 @@ describe("PostGIS Query Integration Tests", () => {
 
       expect(result.errors).toBeUndefined();
       expect(result.data).toBeDefined();
-      expect(result.data.testGeometries).toBeDefined();
-      expect(result.data.testGeometries.nodes).toBeDefined();
-      expect(result.data.testGeometries.nodes.length).toBeGreaterThan(0);
+      expect(result.data.allTestGeometries).toBeDefined();
+      expect(result.data.allTestGeometries.nodes).toBeDefined();
+      expect(result.data.allTestGeometries.nodes.length).toBeGreaterThan(0);
 
-      const firstNode = result.data.testGeometries.nodes[0];
+      const firstNode = result.data.allTestGeometries.nodes[0];
       expect(firstNode.geomPoint).toBeDefined();
       expect(firstNode.geomPoint.geojson).toBeDefined();
       expect(firstNode.geomPoint.geojson.type).toBe("Point");
@@ -58,7 +58,7 @@ describe("PostGIS Query Integration Tests", () => {
     it("should return x and y fields for Point geometry", async () => {
       const query = `
         query {
-          testGeometries {
+          allTestGeometries {
             nodes {
               id
               geomPoint {
@@ -77,7 +77,7 @@ describe("PostGIS Query Integration Tests", () => {
       expect(result.errors).toBeUndefined();
       expect(result.data).toBeDefined();
 
-      const firstNode = result.data.testGeometries.nodes[0];
+      const firstNode = result.data.allTestGeometries.nodes[0];
       if (firstNode.geomPoint) {
         expect(firstNode.geomPoint.x).toBeDefined();
         expect(firstNode.geomPoint.y).toBeDefined();
@@ -91,7 +91,7 @@ describe("PostGIS Query Integration Tests", () => {
     it("should return z field for Point with Z coordinate", async () => {
       const query = `
         query {
-          testGeometries {
+          allTestGeometries {
             nodes {
               id
               geomPointz {
@@ -111,7 +111,7 @@ describe("PostGIS Query Integration Tests", () => {
       expect(result.errors).toBeUndefined();
       expect(result.data).toBeDefined();
 
-      const firstNode = result.data.testGeometries.nodes[0];
+      const firstNode = result.data.allTestGeometries.nodes[0];
       if (firstNode.geomPointz) {
         expect(firstNode.geomPointz.z).toBeDefined();
         expect(typeof firstNode.geomPointz.z).toBe("number");
@@ -123,7 +123,7 @@ describe("PostGIS Query Integration Tests", () => {
     it("should return points array for LineString geometry", async () => {
       const query = `
         query {
-          testGeometries {
+          allTestGeometries {
             nodes {
               id
               geomLinestring {
@@ -144,7 +144,7 @@ describe("PostGIS Query Integration Tests", () => {
       expect(result.errors).toBeUndefined();
       expect(result.data).toBeDefined();
 
-      const firstNode = result.data.testGeometries.nodes[0];
+      const firstNode = result.data.allTestGeometries.nodes[0];
       if (firstNode.geomLinestring) {
         expect(firstNode.geomLinestring.points).toBeDefined();
         expect(Array.isArray(firstNode.geomLinestring.points)).toBe(true);
@@ -159,7 +159,7 @@ describe("PostGIS Query Integration Tests", () => {
     it("should return points array for MultiPoint geometry", async () => {
       const query = `
         query {
-          testGeometries {
+          allTestGeometries {
             nodes {
               id
               geomMultipoint {
@@ -180,7 +180,7 @@ describe("PostGIS Query Integration Tests", () => {
       expect(result.errors).toBeUndefined();
       expect(result.data).toBeDefined();
 
-      const firstNode = result.data.testGeometries.nodes[0];
+      const firstNode = result.data.allTestGeometries.nodes[0];
       if (firstNode.geomMultipoint) {
         expect(firstNode.geomMultipoint.points).toBeDefined();
         expect(Array.isArray(firstNode.geomMultipoint.points)).toBe(true);
@@ -193,7 +193,7 @@ describe("PostGIS Query Integration Tests", () => {
     it("should return lineStrings array for MultiLineString geometry", async () => {
       const query = `
         query {
-          testGeometries {
+          allTestGeometries {
             nodes {
               id
               geomMultilinestring {
@@ -216,7 +216,7 @@ describe("PostGIS Query Integration Tests", () => {
       expect(result.errors).toBeUndefined();
       expect(result.data).toBeDefined();
 
-      const firstNode = result.data.testGeometries.nodes[0];
+      const firstNode = result.data.allTestGeometries.nodes[0];
       if (firstNode.geomMultilinestring) {
         expect(firstNode.geomMultilinestring.lineStrings).toBeDefined();
         expect(Array.isArray(firstNode.geomMultilinestring.lineStrings)).toBe(true);
@@ -229,7 +229,7 @@ describe("PostGIS Query Integration Tests", () => {
     it("should return polygons array for MultiPolygon geometry", async () => {
       const query = `
         query {
-          testGeometries {
+          allTestGeometries {
             nodes {
               id
               geomMultipolygon {
@@ -254,7 +254,7 @@ describe("PostGIS Query Integration Tests", () => {
       expect(result.errors).toBeUndefined();
       expect(result.data).toBeDefined();
 
-      const firstNode = result.data.testGeometries.nodes[0];
+      const firstNode = result.data.allTestGeometries.nodes[0];
       if (firstNode.geomMultipolygon) {
         expect(firstNode.geomMultipolygon.polygons).toBeDefined();
         expect(Array.isArray(firstNode.geomMultipolygon.polygons)).toBe(true);
@@ -267,7 +267,7 @@ describe("PostGIS Query Integration Tests", () => {
     it("should return geometries array for GeometryCollection", async () => {
       const query = `
         query {
-          testGeometries {
+          allTestGeometries {
             nodes {
               id
               geomGeometrycollection {
@@ -288,7 +288,7 @@ describe("PostGIS Query Integration Tests", () => {
       expect(result.errors).toBeUndefined();
       expect(result.data).toBeDefined();
 
-      const firstNode = result.data.testGeometries.nodes[0];
+      const firstNode = result.data.allTestGeometries.nodes[0];
       if (firstNode.geomGeometrycollection) {
         expect(firstNode.geomGeometrycollection.geometries).toBeDefined();
         expect(Array.isArray(firstNode.geomGeometrycollection.geometries)).toBe(true);
@@ -301,7 +301,7 @@ describe("PostGIS Query Integration Tests", () => {
     it("should handle unconstrained geometry columns with dynamic type detection", async () => {
       const query = `
         query {
-          testGeometries {
+          allTestGeometries {
             nodes {
               id
               geomUnconstrained {
@@ -318,7 +318,7 @@ describe("PostGIS Query Integration Tests", () => {
       expect(result.errors).toBeUndefined();
       expect(result.data).toBeDefined();
 
-      const firstNode = result.data.testGeometries.nodes[0];
+      const firstNode = result.data.allTestGeometries.nodes[0];
       if (firstNode.geomUnconstrained) {
         expect(firstNode.geomUnconstrained.geojson).toBeDefined();
         expect(firstNode.geomUnconstrained.geojson.type).toBeDefined();
@@ -330,7 +330,7 @@ describe("PostGIS Query Integration Tests", () => {
     it("should handle null geometry values gracefully", async () => {
       const query = `
         query {
-          testGeometries {
+          allTestGeometries {
             nodes {
               id
               geomNullable {
@@ -348,7 +348,7 @@ describe("PostGIS Query Integration Tests", () => {
       expect(result.data).toBeDefined();
 
       // Should not throw errors for null geometries
-      const nodes = result.data.testGeometries.nodes;
+      const nodes = result.data.allTestGeometries.nodes;
       const nodeWithNull = nodes.find((n: any) => n.geomNullable === null);
       expect(nodeWithNull).toBeDefined();
     });

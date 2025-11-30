@@ -1,5 +1,6 @@
 import type { GraphileConfig } from "graphile-config";
 import { EXPORTABLE } from "graphile-build";
+import { lambda, type Step } from "grafast";
 import { GIS_SUBTYPE } from "./constants";
 
 const { version } = require("../package.json");
@@ -28,6 +29,95 @@ export const PostgisGeometryCollectionFieldsPlugin: GraphileConfig.Plugin = {
         const objectScope = scope as any;
         const isPgClassType = objectScope.isPgClassType;
         const pgCodec = objectScope.pgCodec;
+        const isPostGISType = objectScope.isPostGISType;
+        const isGeometryType = objectScope.isGeometryType;
+        const subtype = objectScope.subtype;
+
+        // Process geometry types (GeometryCollection, etc.)
+        if (isPostGISType && isGeometryType && subtype === GIS_SUBTYPE.GeometryCollection) {
+          const typeName = (context.Self as any)?.name || 'unknown';
+          console.log(`[PostgisGeometryCollectionFieldsPlugin] ✓ Adding geometries field to GeometryCollection geometry type: ${typeName}`);
+          const { graphql } = build;
+          const { GraphQLList, GraphQLNonNull } = graphql;
+
+          const newFields: Record<string, any> = {};
+          const geometryInterfaceType = build.getTypeByName("GeometryInterface") as any;
+
+          // Add geometries field - returns array of geometry objects that implement GeometryInterface
+          // Since GeometryCollection can contain different geometry types, we use GeometryInterface
+          newFields["geometries"] = fieldWithHooks(
+            {
+              fieldName: "geometries",
+            } as any,
+            {
+              description: build.wrapDescription(
+                `An array of geometry objects in this GeometryCollection. Each geometry implements GeometryInterface.`,
+                "field"
+              ),
+              type: new GraphQLNonNull(
+                new GraphQLList(
+                  new GraphQLNonNull(geometryInterfaceType)
+                )
+              ),
+              plan: EXPORTABLE(
+                () =>
+                  function plan($source: any): Step {
+                    // $source is the geometry object from the codec: { geojson, srid }
+                    // Use lambda to convert null to empty object, ensuring we never return null
+                    // This prevents GraphQL from seeing null for a non-nullable field
+                    return lambda(
+                      $source,
+                      (parent: any) => {
+                        // Always return an object, never null
+                        // If parent is null, return empty object which resolve will convert to []
+                        if (parent == null) {
+                          return {};
+                        }
+                        return parent;
+                      },
+                      true // allow null in input, but we convert it to {} in the function
+                    ) as Step;
+                  },
+                []
+              ),
+              resolve: EXPORTABLE(
+                () =>
+                  function resolve(parent: any) {
+                    // parent is the full geometry object: { geojson, srid }
+                    if (!parent || !parent.geojson) {
+                      return [];
+                    }
+                    
+                    // parent is { geojson, srid }
+                    const geojson = parent.geojson;
+                    const srid = parent.srid || 0;
+                    
+                    // GeometryCollection GeoJSON format: { type: "GeometryCollection", geometries: [...] }
+                    if (typeof geojson === "object" && geojson && geojson.type === "GeometryCollection" && Array.isArray(geojson.geometries)) {
+                      // Return geometry objects with geojson and srid fields
+                      // Each geometry in the collection is a GeoJSON object, we wrap it with srid
+                      return geojson.geometries.map((geom: any) => ({
+                        geojson: geom,
+                        srid: srid,
+                      }));
+                    }
+                    // Return empty array if no geometries (field is non-nullable list)
+                    return [];
+                  },
+                []
+              ),
+            }
+          );
+
+          if (Object.keys(newFields).length > 0) {
+            console.log(`[PostgisGeometryCollectionFieldsPlugin] Added ${Object.keys(newFields).length} fields to ${typeName}`);
+            return build.extend(
+              fields,
+              newFields,
+              "Adding PostGIS GeometryCollection geometries field to geometry type"
+            );
+          }
+        }
 
         // Only process table types with attributes
         if (!isPgClassType || !pgCodec?.attributes) {

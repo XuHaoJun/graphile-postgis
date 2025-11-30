@@ -3,6 +3,7 @@ import { PostgisInflectionPlugin } from "./inflection";
 import { PostgisExtensionPlugin } from "./PostgisExtensionPlugin";
 import { PostgisCodecPlugin } from "./PostgisCodecPlugin";
 import { PostgisScalarPlugin } from "./PostgisScalarPlugin";
+import { PostgisRegisterTypesPlugin } from "./PostgisRegisterTypesPlugin";
 import { PostgisTypesPlugin } from "./PostgisTypesPlugin";
 import { PostgisMutationPlugin } from "./PostgisMutationPlugin";
 import { PostgisPointFieldsPlugin } from "./PostgisPointFieldsPlugin";
@@ -40,6 +41,7 @@ export const postgisPlugin: GraphileConfig.Preset = {
     PostgisExtensionPlugin,
     PostgisCodecPlugin,
     PostgisScalarPlugin,
+    PostgisRegisterTypesPlugin,
     PostgisTypesPlugin,
     PostgisMutationPlugin,
     PostgisPointFieldsPlugin,
@@ -59,6 +61,7 @@ export { PostgisInflectionPlugin } from "./inflection";
 export { PostgisExtensionPlugin } from "./PostgisExtensionPlugin";
 export { PostgisCodecPlugin } from "./PostgisCodecPlugin";
 export { PostgisScalarPlugin } from "./PostgisScalarPlugin";
+export { PostgisRegisterTypesPlugin } from "./PostgisRegisterTypesPlugin";
 export { PostgisTypesPlugin } from "./PostgisTypesPlugin";
 export { PostgisMutationPlugin } from "./PostgisMutationPlugin";
 export { PostgisPointFieldsPlugin } from "./PostgisPointFieldsPlugin";

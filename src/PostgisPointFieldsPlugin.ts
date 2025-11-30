@@ -1,12 +1,13 @@
 import type { GraphileConfig } from "graphile-config";
 import { EXPORTABLE } from "graphile-build";
+import { get, type Step } from "grafast";
 import { GIS_SUBTYPE } from "./constants";
 
 const { version } = require("../package.json");
 
 /**
  * Plugin to add x, y, z, and srid fields to Point geometry columns
- * 
+ *
  * This plugin detects PostGIS Point geometry/geography columns and adds
  * coordinate fields (x/longitude, y/latitude, z/height, srid) that use
  * PostGIS functions (ST_X, ST_Y, ST_Z, ST_SRID) to extract values directly
@@ -20,17 +21,111 @@ export const PostgisPointFieldsPlugin: GraphileConfig.Plugin = {
   schema: {
     hooks: {
       GraphQLObjectType_fields(fields, build, context) {
-        const {
-          scope,
-          fieldWithHooks,
-        } = context;
+        const { scope, fieldWithHooks } = context;
 
         // Type guard for object fields context
         const objectScope = scope as any;
         const isPgClassType = objectScope.isPgClassType;
         const pgCodec = objectScope.pgCodec;
+        const isPostGISType = objectScope.isPostGISType;
+        const isGeometryType = objectScope.isGeometryType;
+        const subtype = objectScope.subtype;
+        const hasZ = objectScope.hasZ;
+        
+        // Process geometry types (GeometryPoint, etc.)
+        if (isPostGISType && isGeometryType && subtype === GIS_SUBTYPE.Point) {
+          const typeName = (context.Self as any)?.name || 'unknown';
+          console.log(`[PostgisPointFieldsPlugin] ✓ Adding x, y, z fields to Point geometry type: ${typeName}, subtype=${subtype}, GIS_SUBTYPE.Point=${GIS_SUBTYPE.Point}`);
+          const { inflection, graphql } = build;
+          const { GraphQLNonNull, GraphQLFloat } = graphql;
 
-        // Only process table types with attributes
+          const newFields: Record<string, any> = {};
+          const codec = { name: "geometry" } as any; // Dummy codec for inflection
+          const xFieldName = inflection.gisXFieldName(codec);
+          const yFieldName = inflection.gisYFieldName(codec);
+          const zFieldName = inflection.gisZFieldName(codec);
+
+          // Add x field - use get() step to access property from $source
+          newFields[xFieldName] = fieldWithHooks(
+            {
+              fieldName: xFieldName,
+            } as any,
+            {
+              description: build.wrapDescription(
+                `The ${xFieldName} coordinate of this Point geometry.`,
+                "field"
+              ),
+              type: new GraphQLNonNull(GraphQLFloat),
+              plan: EXPORTABLE(
+                () =>
+                  function plan($source: any): Step {
+                    // $source is the geometry object from the codec
+                    // The codec returns { geojson, srid, x, y, z } for Point types
+                    // Use get() step to access the 'x' property
+                    return get($source, 'x') as Step;
+                  },
+                []
+              ),
+            }
+          );
+
+          // Add y field
+          newFields[yFieldName] = fieldWithHooks(
+            {
+              fieldName: yFieldName,
+            } as any,
+            {
+              description: build.wrapDescription(
+                `The ${yFieldName} coordinate of this Point geometry.`,
+                "field"
+              ),
+              type: new GraphQLNonNull(GraphQLFloat),
+              plan: EXPORTABLE(
+                () =>
+                  function plan($source: any): Step {
+                    // Use get() step to access the 'y' property
+                    return get($source, 'y') as Step;
+                  },
+                []
+              ),
+            }
+          );
+
+          // Add z field if geometry has Z coordinate
+          if (hasZ) {
+            newFields[zFieldName] = fieldWithHooks(
+              {
+                fieldName: zFieldName,
+              } as any,
+              {
+                description: build.wrapDescription(
+                  `The ${zFieldName} coordinate of this Point geometry.`,
+                  "field"
+                ),
+                type: new GraphQLNonNull(GraphQLFloat),
+                plan: EXPORTABLE(
+                  () =>
+                    function plan($source: any): Step {
+                      // Use get() step to access the 'z' property
+                      return get($source, 'z') as Step;
+                    },
+                  []
+                ),
+              }
+            );
+          }
+
+          if (Object.keys(newFields).length > 0) {
+            console.log(`[PostgisPointFieldsPlugin] Added ${Object.keys(newFields).length} fields to ${typeName}`);
+            return build.extend(
+              fields,
+              newFields,
+              "Adding PostGIS Point coordinate fields to geometry type"
+            );
+          }
+        }
+
+        // Only process table types with attributes (original behavior)
         if (!isPgClassType || !pgCodec?.attributes) {
           return fields;
         }
@@ -57,7 +152,7 @@ export const PostgisPointFieldsPlugin: GraphileConfig.Plugin = {
           pgCodec.attributes
         )) {
           const attributeCodec = (attribute as any).codec;
-          const extensions = (attributeCodec.extensions as any);
+          const extensions = attributeCodec.extensions as any;
 
           // Check if this is a PostGIS codec
           if (!extensions?.isPostGIS) {
@@ -77,7 +172,10 @@ export const PostgisPointFieldsPlugin: GraphileConfig.Plugin = {
           }
 
           const hasZ = typeDetails.hasZ;
-          const fieldName = (inflection as any).attribute({ attributeName, codec: pgCodec });
+          const fieldName = (inflection as any).attribute({
+            attributeName,
+            codec: pgCodec,
+          });
           const xFieldName = (inflection as any).gisXFieldName(attributeCodec);
           const yFieldName = (inflection as any).gisYFieldName(attributeCodec);
           const zFieldName = (inflection as any).gisZFieldName(attributeCodec);
@@ -102,7 +200,9 @@ export const PostgisPointFieldsPlugin: GraphileConfig.Plugin = {
                     const alias = classStep.alias;
                     // Reference the geometry column directly and apply ST_X
                     return $source.select(
-                      sqlLib`ST_X(${alias}.${sqlLib.identifier(attributeName)})`,
+                      sqlLib`ST_X(${alias}.${sqlLib.identifier(
+                        attributeName
+                      )})`,
                       float8Codec
                     );
                   },
@@ -128,7 +228,9 @@ export const PostgisPointFieldsPlugin: GraphileConfig.Plugin = {
                     const classStep = $source.getClassStep();
                     const alias = classStep.alias;
                     return $source.select(
-                      sqlLib`ST_Y(${alias}.${sqlLib.identifier(attributeName)})`,
+                      sqlLib`ST_Y(${alias}.${sqlLib.identifier(
+                        attributeName
+                      )})`,
                       float8Codec
                     );
                   },
@@ -155,7 +257,9 @@ export const PostgisPointFieldsPlugin: GraphileConfig.Plugin = {
                       const classStep = $source.getClassStep();
                       const alias = classStep.alias;
                       return $source.select(
-                        sqlLib`ST_Z(${alias}.${sqlLib.identifier(attributeName)})`,
+                        sqlLib`ST_Z(${alias}.${sqlLib.identifier(
+                          attributeName
+                        )})`,
                         float8Codec
                       );
                     },
@@ -182,7 +286,9 @@ export const PostgisPointFieldsPlugin: GraphileConfig.Plugin = {
                     const classStep = $source.getClassStep();
                     const alias = classStep.alias;
                     return $source.select(
-                      sqlLib`ST_SRID(${alias}.${sqlLib.identifier(attributeName)})`,
+                      sqlLib`ST_SRID(${alias}.${sqlLib.identifier(
+                        attributeName
+                      )})`,
                       int4Codec
                     );
                   },
@@ -196,9 +302,12 @@ export const PostgisPointFieldsPlugin: GraphileConfig.Plugin = {
           return fields;
         }
 
-        return build.extend(fields, newFields, "Adding PostGIS Point coordinate fields");
+        return build.extend(
+          fields,
+          newFields,
+          "Adding PostGIS Point coordinate fields"
+        );
       },
     },
   },
 };
-

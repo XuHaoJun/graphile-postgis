@@ -1,5 +1,6 @@
 import type { GraphileConfig } from "graphile-config";
 import { EXPORTABLE } from "graphile-build";
+import type { Step } from "grafast";
 import { GIS_SUBTYPE } from "./constants";
 
 const { version } = require("../package.json");
@@ -28,6 +29,81 @@ export const PostgisMultiLineStringFieldsPlugin: GraphileConfig.Plugin = {
         const objectScope = scope as any;
         const isPgClassType = objectScope.isPgClassType;
         const pgCodec = objectScope.pgCodec;
+        const isPostGISType = objectScope.isPostGISType;
+        const isGeometryType = objectScope.isGeometryType;
+        const subtype = objectScope.subtype;
+
+        // Process geometry types (GeometryMultiLineString, etc.)
+        if (isPostGISType && isGeometryType && subtype === GIS_SUBTYPE.MultiLineString) {
+          const typeName = (context.Self as any)?.name || 'unknown';
+          console.log(`[PostgisMultiLineStringFieldsPlugin] ✓ Adding lineStrings field to MultiLineString geometry type: ${typeName}`);
+          const { graphql } = build;
+          const { GraphQLList, GraphQLNonNull } = graphql;
+
+          const newFields: Record<string, any> = {};
+          const geometryLineStringType = build.getTypeByName("GeometryLineString") as any;
+
+          // Add lineStrings field - returns array of GeometryLineString objects
+          newFields["lineStrings"] = fieldWithHooks(
+            {
+              fieldName: "lineStrings",
+            } as any,
+            {
+              description: build.wrapDescription(
+                `An array of LineString geometries in this MultiLineString geometry.`,
+                "field"
+              ),
+              type: new GraphQLNonNull(
+                new GraphQLList(
+                  new GraphQLNonNull(geometryLineStringType)
+                )
+              ),
+              plan: EXPORTABLE(
+                () =>
+                  function plan($source: any): Step {
+                    // $source is the geometry object from the codec: { geojson, srid }
+                    // Return the full geometry object so we can access both geojson and srid in resolve
+                    return $source as Step;
+                  },
+                []
+              ),
+              resolve: EXPORTABLE(
+                () =>
+                  function resolve(parent: any) {
+                    if (!parent || !parent.geojson) {
+                      return null;
+                    }
+                    // parent is the full geometry object: { geojson, srid }
+                    const geojson = parent.geojson;
+                    const srid = parent.srid || 0;
+                    
+                    // MultiLineString GeoJSON format: { type: "MultiLineString", coordinates: [[[x1, y1], [x2, y2]], ...] }
+                    if (typeof geojson === "object" && geojson.type === "MultiLineString" && Array.isArray(geojson.coordinates)) {
+                      // Create GeometryLineString objects for each LineString
+                      return geojson.coordinates.map((lineStringCoords: number[][]) => ({
+                        geojson: {
+                          type: "LineString",
+                          coordinates: lineStringCoords,
+                        },
+                        srid: srid,
+                      }));
+                    }
+                    return null;
+                  },
+                []
+              ),
+            }
+          );
+
+          if (Object.keys(newFields).length > 0) {
+            console.log(`[PostgisMultiLineStringFieldsPlugin] Added ${Object.keys(newFields).length} fields to ${typeName}`);
+            return build.extend(
+              fields,
+              newFields,
+              "Adding PostGIS MultiLineString lineStrings field to geometry type"
+            );
+          }
+        }
 
         // Only process table types with attributes
         if (!isPgClassType || !pgCodec?.attributes) {
