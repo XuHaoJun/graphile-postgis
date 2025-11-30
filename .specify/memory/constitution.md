@@ -1,50 +1,50 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+Version change: N/A → 1.0.0
+Modified principles: N/A (initial creation)
+Added sections: Core Principles (4 principles), Development Standards, Governance
+Removed sections: N/A
+Templates requiring updates:
+  ✅ plan-template.md - Constitution Check section aligns with principles
+  ✅ spec-template.md - User Scenarios & Testing section aligns with testing standards
+  ✅ tasks-template.md - Test tasks align with testing standards
+Follow-up TODOs: None
+-->
+
+# Graphile PostGIS Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Code Quality (NON-NEGOTIABLE)
+All code MUST follow established patterns and maintainability standards. TypeScript strict mode MUST be enabled. Code MUST pass linting (prettier, tslint/eslint) with zero warnings. Functions MUST be focused, well-named, and documented where behavior is non-obvious. Code reviews MUST verify adherence to project style guides and architectural patterns.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+**Rationale**: Consistent code quality reduces bugs, improves maintainability, and enables team collaboration. Strict typing catches errors at compile time.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. Testing Standards (NON-NEGOTIABLE)
+All features MUST include tests before implementation (TDD preferred). Unit tests MUST cover critical paths and edge cases. Integration tests MUST validate GraphQL schema generation and PostGIS type handling. Test snapshots MUST be updated when behavior intentionally changes. Test coverage MUST be maintained for all public APIs and plugin entry points.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+**Rationale**: Tests provide confidence in changes, prevent regressions, and document expected behavior. PostGIS integration requires database-level validation.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. User Experience Consistency
+GraphQL API MUST follow PostGraphile conventions and patterns. GeoJSON format MUST comply with RFC 7946. Error messages MUST be clear and actionable. API responses MUST maintain consistent structure across all PostGIS geometry types. Breaking changes to public APIs MUST be versioned and documented.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+**Rationale**: Consistency reduces cognitive load for API consumers. Following established patterns ensures compatibility with PostGraphile ecosystem.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Performance Requirements
+Schema generation MUST complete within acceptable time limits for typical database sizes. GraphQL query execution MUST not introduce significant overhead beyond PostGraphile baseline. Database queries MUST be optimized to avoid N+1 problems. Memory usage MUST remain reasonable for large geometry collections.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+**Rationale**: Performance directly impacts developer experience and production viability. PostGIS operations can be computationally expensive and must be handled efficiently.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Development Standards
+
+**Technology Stack**: TypeScript, PostGraphile v5+, PostgreSQL with PostGIS extension, Jest for testing.
+
+**Code Style**: Prettier for formatting, tslint/eslint for linting. Follow existing codebase patterns.
+
+**Testing**: Jest with ts-jest. Use snapshot tests for GraphQL schema validation. Integration tests require TEST_DATABASE_URL environment variable.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other development practices. All pull requests and code reviews MUST verify compliance with these principles. Amendments require documentation of rationale and impact assessment. Version changes follow semantic versioning: MAJOR for principle removals/redefinitions, MINOR for new principles, PATCH for clarifications.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-11-30 | **Last Amended**: 2025-11-30
