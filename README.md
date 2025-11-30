@@ -1,4 +1,4 @@
-# @graphile/postgis-v5
+# @xuhaojun/graphile-postgis
 
 PostGIS support for PostGraphile v5.
 
@@ -15,47 +15,92 @@ This project is currently under active development.
 ## Installation
 
 ```bash
-npm install @graphile/postgis-v5
+npm install @xuhaojun/graphile-postgis
 # or
-yarn add @graphile/postgis-v5
+yarn add @xuhaojun/graphile-postgis
 # or
-pnpm add @graphile/postgis-v5
+pnpm add @xuhaojun/graphile-postgis
 ```
 
 ## Prerequisites
 
 - PostgreSQL with PostGIS extension (2.5+)
-- PostGraphile v5.0.0-rc.1 or later
+- PostGraphile v5.0.0-rc or later
 
 ## Usage
 
-### Basic Setup
-
-```typescript
-import { postgraphile } from "postgraphile";
-import { postgisPlugin } from "@graphile/postgis-v5";
-
-const app = postgraphile({
-  connectionString: process.env.DATABASE_URL,
-  schemas: ["public"],
-  plugins: [postgisPlugin],
-});
-```
-
-### Using with graphile.config.mjs
+### Basic Setup with graphile.config.mjs
 
 ```javascript
-import { makeV4Preset } from "postgraphile/presets/v4";
-import { postgisPlugin } from "@graphile/postgis-v5";
+import { PostGraphileAmberPreset } from "postgraphile/presets/amber";
+import { makePgService } from "postgraphile/adaptors/pg";
+import { postgisPlugin } from "@xuhaojun/graphile-postgis";
 
 export default {
-  extends: [
-    makeV4Preset({
+  extends: [PostGraphileAmberPreset, postgisPlugin],
+  pgServices: [
+    makePgService({
       connectionString: process.env.DATABASE_URL,
       schemas: ["public"],
     }),
   ],
-  plugins: [postgisPlugin],
+};
+```
+
+### Using with makeSchema
+
+```typescript
+import * as adaptor from "postgraphile/@dataplan/pg/adaptors/pg";
+import { PostGraphileAmberPreset } from "postgraphile/presets/amber";
+import { makeSchema } from "postgraphile";
+import { postgisPlugin } from "@xuhaojun/graphile-postgis";
+import * as pg from "pg";
+
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+const preset = {
+  extends: [PostGraphileAmberPreset, postgisPlugin],
+  pgServices: [
+    adaptor.makePgService({
+      name: "main",
+      withPgClientKey: "withPgClient",
+      pgSettingsKey: "pgSettings",
+      schemas: ["public"],
+      pool: pool,
+    }),
+  ],
+};
+
+const { schema } = await makeSchema(preset);
+```
+
+### Using with V4 Compatibility (Optional)
+
+If you're migrating from PostGraphile v4 or need v4-compatible behavior, you can add `makeV4Preset`:
+
+```javascript
+import { PostGraphileAmberPreset } from "postgraphile/presets/amber";
+import { makeV4Preset } from "postgraphile/presets/v4";
+import { makePgService } from "postgraphile/adaptors/pg";
+import { postgisPlugin } from "@xuhaojun/graphile-postgis";
+
+export default {
+  extends: [
+    PostGraphileAmberPreset,
+    postgisPlugin,
+    makeV4Preset({
+      simpleCollections: "both",
+      // ... other v4 options
+    }),
+  ],
+  pgServices: [
+    makePgService({
+      connectionString: process.env.DATABASE_URL,
+      schemas: ["public"],
+    }),
+  ],
 };
 ```
 
@@ -63,45 +108,100 @@ export default {
 
 ```graphql
 query {
-  locations {
+  allTestGeometries {
     nodes {
       id
-      name
-      pointLocation {
+      geomPoint {
         # GeoJSON format
-        type
-        coordinates
-        
-        # Direct coordinate access
+        geojson {
+          type
+          coordinates
+        }
+        srid
+
+        # Direct coordinate access for Point types
         x
         y
-        srid
       }
     }
   }
 }
 ```
 
-### Example GraphQL Mutation
+### Example GraphQL Query with LineString
 
 ```graphql
-mutation {
-  createLocation(
-    input: {
-      location: {
-        name: "San Francisco"
-        pointLocation: {
-          type: "Point"
-          coordinates: [-122.4194, 37.7749]
+query {
+  allTestGeometries {
+    nodes {
+      id
+      geomLinestring {
+        geojson {
+          type
+          coordinates
+        }
+        srid
+        # Type-specific fields for LineString
+        points {
+          x
+          y
         }
       }
     }
+  }
+}
+```
+
+### Example GraphQL Mutation (Create)
+
+```graphql
+mutation {
+  createTestMutation(
+    input: {
+      testMutation: {
+        name: "San Francisco"
+        location: { type: "Point", coordinates: [-122.4194, 37.7749] }
+      }
+    }
   ) {
-    location {
+    testMutation {
       id
-      pointLocation {
-        type
-        coordinates
+      name
+      location {
+        geojson {
+          type
+          coordinates
+        }
+        srid
+        x
+        y
+      }
+    }
+  }
+}
+```
+
+### Example GraphQL Mutation (Update)
+
+```graphql
+mutation {
+  updateTestMutationById(
+    input: {
+      id: 1
+      testMutationPatch: {
+        location: { type: "Point", coordinates: [-122.4194, 37.7749] }
+      }
+    }
+  ) {
+    testMutation {
+      id
+      location {
+        geojson {
+          type
+          coordinates
+        }
+        x
+        y
       }
     }
   }
@@ -117,11 +217,17 @@ mutation {
   - MultiPoint, MultiLineString, MultiPolygon
   - GeometryCollection
 - ✅ Direct coordinate access (x, y, z, srid fields for Point types)
-- ✅ Type-specific fields (points for LineString, exterior/interiors for Polygon, etc.)
+- ✅ Type-specific fields:
+  - `points` for LineString and MultiPoint
+  - `exterior` and `interiors` for Polygon
+  - `lineStrings` for MultiLineString
+  - `polygons` for MultiPolygon
+  - `geometries` for GeometryCollection
 - ✅ Automatic SRID handling and transformation
 - ✅ Support for XY, XYZ, XYM, and XYZM coordinate dimensions
 - ✅ Comprehensive GeoJSON validation with detailed error messages
 - ✅ Large geometry warnings for performance monitoring
+- ✅ Null geometry handling
 
 ## Troubleshooting
 
@@ -130,11 +236,13 @@ mutation {
 If you see warnings about PostGIS not being detected:
 
 1. Verify PostGIS is installed:
+
    ```sql
    SELECT PostGIS_version();
    ```
 
 2. Check extension is enabled:
+
    ```sql
    SELECT * FROM pg_extension WHERE extname = 'postgis';
    ```
@@ -167,4 +275,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 ## License
 
 MIT
-
