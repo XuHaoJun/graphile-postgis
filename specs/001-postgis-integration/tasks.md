@@ -24,13 +24,13 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create project directory structure (src/, __tests__/, scripts/) per plan.md
-- [ ] T002 [P] Initialize package.json with PostGraphile v5 dependencies (postgraphile, graphile-build, graphile-build-pg, @dataplan/pg, grafast, pg-sql2, graphql)
-- [ ] T003 [P] Create tsconfig.json with TypeScript strict mode enabled
-- [ ] T004 [P] Configure Jest with ts-jest in jest.config.js
-- [ ] T005 [P] Setup Prettier and ESLint configuration files
-- [ ] T006 [P] Create .gitignore file for Node.js/TypeScript project
-- [ ] T007 Create README.md with basic project description and installation instructions
+- [x] T001 Create project directory structure (src/, __tests__/, scripts/) per plan.md
+- [x] T002 [P] Initialize package.json with PostGraphile v5 dependencies (postgraphile, graphile-build, graphile-build-pg, @dataplan/pg, grafast, pg-sql2, graphql)
+- [x] T003 [P] Create tsconfig.json with TypeScript strict mode enabled
+- [x] T004 [P] Configure Jest with ts-jest in jest.config.js
+- [x] T005 [P] Setup Prettier and ESLint configuration files
+- [x] T006 [P] Create .gitignore file for Node.js/TypeScript project
+- [x] T007 Create README.md with basic project description and installation instructions
 
 ---
 
@@ -40,13 +40,13 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T008 Create src/constants.ts with geometry subtype constants (GIS_SUBTYPE, GIS_SUBTYPE_NAME, SUBTYPE_STRING_BY_SUBTYPE)
-- [ ] T009 Create src/types.ts with TypeScript type definitions (Subtype, GISTypeDetails, etc.)
-- [ ] T010 Create src/utils.ts with utility functions (getGISTypeDetails, getGISTypeModifier, getGISTypeName)
-- [ ] T011 Create src/inflection.ts with inflection functions for naming GIS types (gisType, gisInterfaceName, geojsonFieldName, gisXFieldName, etc.)
-- [ ] T012 Create src/PostgisExtensionPlugin.ts with gather hook to detect PostGIS extension and geometry/geography types
-- [ ] T013 Create __tests__/fixtures/schema.sql with test database schema (tables with various geometry types, SRIDs, Z/M coordinates, unconstrained geometry, null columns)
-- [ ] T014 Create scripts/test script that checks TEST_DATABASE_URL and loads schema.sql before running tests
+- [x] T008 Create src/constants.ts with geometry subtype constants (GIS_SUBTYPE, GIS_SUBTYPE_NAME, SUBTYPE_STRING_BY_SUBTYPE)
+- [x] T009 Create src/types.ts with TypeScript type definitions (Subtype, GISTypeDetails, etc.)
+- [x] T010 Create src/utils.ts with utility functions (getGISTypeDetails, getGISTypeModifier, getGISTypeName)
+- [x] T011 Create src/inflection.ts with inflection functions for naming GIS types (gisType, gisInterfaceName, geojsonFieldName, gisXFieldName, etc.)
+- [x] T012 Create src/PostgisExtensionPlugin.ts with gather hook to detect PostGIS extension and geometry/geography types
+- [x] T013 Create __tests__/fixtures/schema.sql with test database schema (tables with various geometry types, SRIDs, Z/M coordinates, unconstrained geometry, null columns)
+- [x] T014 Create scripts/test script that checks TEST_DATABASE_URL and loads schema.sql before running tests
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -68,8 +68,8 @@
 
 ### Implementation for User Story 1
 
-- [ ] T018 [US1] Create src/validation.ts with GeoJSON validation functions (validateGeoJSON structure, coordinates, type matching)
-- [ ] T019 [US1] Create src/PostgisScalarPlugin.ts to register GeoJSON scalar type during init hook in src/PostgisScalarPlugin.ts
+- [x] T018 [US1] Create src/validation.ts with GeoJSON validation functions (validateGeoJSON structure, coordinates, type matching)
+- [x] T019 [US1] Create src/PostgisScalarPlugin.ts to register GeoJSON scalar type during init hook in src/PostgisScalarPlugin.ts
 - [ ] T020 [US1] Create src/codec.ts with custom PgCodec implementation for geometry/geography types (fromPg method for querying)
 - [ ] T021 [US1] Create src/PostgisCodecPlugin.ts to register custom codec during gather phase in src/PostgisCodecPlugin.ts
 - [ ] T022 [US1] Create src/PostgisTypesPlugin.ts to register base GeometryInterface and basic geometry GraphQL types (Point, LineString, Polygon) during init hook

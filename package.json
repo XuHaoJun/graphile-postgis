@@ -1,0 +1,86 @@
+{
+  "name": "@graphile/postgis-v5",
+  "version": "0.1.0",
+  "description": "PostGIS support for PostGraphile v5",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rm -Rf dist",
+    "build": "tsc -p tsconfig.build.json",
+    "watch": "tsc -p tsconfig.build.json --watch",
+    "format": "prettier --ignore-path ./.eslintignore",
+    "format:all": "prettier '**/*.{json,md,html,js,jsx,ts,tsx}'",
+    "format:fix": "prettier --write '**/*.{json,md,html,js,jsx,ts,tsx}'",
+    "format:check": "prettier --list-different '**/*.{json,md,html,js,jsx,ts,tsx}'",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "prepack": "rm -Rf dist && npm run build",
+    "test": "scripts/test",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphile/postgis-v5.git"
+  },
+  "keywords": [
+    "postgraphile",
+    "graphile",
+    "plugin",
+    "postgis",
+    "gis",
+    "postgresql",
+    "graphql",
+    "v5"
+  ],
+  "author": "Graphile Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphile/postgis-v5/issues"
+  },
+  "homepage": "https://github.com/graphile/postgis-v5#readme",
+  "peerDependencies": {
+    "postgraphile": "^5.0.0-rc",
+    "graphile-build": "^5.0.0-rc",
+    "graphile-build-pg": "^5.0.0-rc",
+    "@dataplan/pg": "^1.0.0-rc",
+    "grafast": "^1.0.0-rc",
+    "pg-sql2": "^5.0.0-rc",
+    "graphql": "^16.9.0"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.22.11",
+    "@babel/plugin-transform-runtime": "^7.23.3",
+    "@babel/preset-env": "^7.22.14",
+    "@babel/preset-typescript": "^7.22.11",
+    "@tsconfig/node20": "^20.1.4",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@types/pg": "^8.11.11",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
+    "@typescript-eslint/typescript-estree": "^6.5.0",
+    "babel-jest": "^29.6.4",
+    "babel-plugin-transform-import-meta": "^2.2.1",
+    "eslint": "^8.48.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-graphile-export": "^1.0.0-rc.1",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-jest": "^27.2.3",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-tsdoc": "^0.2.17",
+    "jest": "^29.7.0",
+    "jest-serializer-graphql-schema": "^5.0.0-rc.1",
+    "pg": "^8.14.1",
+    "postgraphile": "^5.0.0-rc.1",
+    "prettier": "^2.8.7",
+    "ts-jest": "^29.1.0",
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "tslib": "^2.5.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
+
