@@ -4,6 +4,9 @@
   "description": "PostGIS support for PostGraphile v5 - Query and mutate spatial data using GeoJSON",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "clean": "rm -Rf dist",
     "build": "tsc -p tsconfig.build.json",
