@@ -1,0 +1,9 @@
+[submodule "learn-projects/crystal"]
+	path = learn-projects/crystal
+	url = git@github.com:graphile/crystal.git
+[submodule "learn-projects/postgis"]
+	path = learn-projects/postgis
+	url = git@github.com:graphile/postgis.git
+[submodule "learn-projects/postgraphile-plugin-connection-filter"]
+	path = learn-projects/postgraphile-plugin-connection-filter
+	url = https://github.com/graphile-contrib/postgraphile-plugin-connection-filter
