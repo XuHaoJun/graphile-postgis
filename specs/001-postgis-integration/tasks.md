@@ -99,11 +99,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T031 [US2] Implement codec toPg method in src/codec.ts to validate GeoJSON and convert to PostGIS using ST_GeomFromGeoJSON
-- [ ] T032 [US2] Implement SRID transformation logic in src/codec.ts (detect GeoJSON SRID, compare with column SRID, apply ST_Transform if needed)
-- [ ] T033 [US2] Enhance GeoJSON validation in src/validation.ts to provide specific error messages with field names, coordinate issues, and type mismatches
-- [ ] T034 [US2] Register GeoJSON as input type for geometry/geography columns in src/PostgisCodecPlugin.ts
-- [ ] T035 [US2] Add error handling for invalid GeoJSON in mutations with detailed error messages in src/codec.ts
+- [x] T031 [US2] Implement codec toPg method in src/codec.ts to validate GeoJSON and convert to PostGIS using ST_GeomFromGeoJSON
+- [x] T032 [US2] Implement SRID transformation logic in src/codec.ts (detect GeoJSON SRID, compare with column SRID, apply ST_Transform if needed)
+- [x] T033 [US2] Enhance GeoJSON validation in src/validation.ts to provide specific error messages with field names, coordinate issues, and type mismatches
+- [x] T034 [US2] Register GeoJSON as input type for geometry/geography columns in src/PostgisTypesPlugin.ts
+- [x] T035 [US2] Add error handling for invalid GeoJSON in mutations with detailed error messages in src/codec.ts
 - [ ] T036 [US2] Test SRID transformation with different source and target SRIDs in __tests__/integration/mutations.test.ts
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently - developers can query and mutate PostGIS data
@@ -126,14 +126,14 @@
 
 ### Implementation for User Story 3
 
-- [ ] T040 [US3] Create src/PostgisPointFieldsPlugin.ts to add x, y, z fields to Point geometry types using GraphQLObjectType_fields hook
-- [ ] T041 [US3] Implement x and y field plans in src/PostgisPointFieldsPlugin.ts using ST_X and ST_Y PostGIS functions
-- [ ] T042 [US3] Implement z field plan in src/PostgisPointFieldsPlugin.ts using ST_Z PostGIS function (conditional on hasZ)
-- [ ] T043 [US3] Create src/PostgisLineStringFieldsPlugin.ts to add points array field to LineString types
-- [ ] T044 [US3] Implement points field plan in src/PostgisLineStringFieldsPlugin.ts to extract coordinates from GeoJSON or use ST_DumpPoints
-- [ ] T045 [US3] Create src/PostgisPolygonFieldsPlugin.ts to add exterior and interiors fields to Polygon types
-- [ ] T046 [US3] Implement exterior and interiors field plans in src/PostgisPolygonFieldsPlugin.ts to extract rings from GeoJSON
-- [ ] T047 [US3] Update src/index.ts to include Point, LineString, and Polygon field plugins
+- [x] T040 [US3] Create src/PostgisPointFieldsPlugin.ts to add x, y, z fields to Point geometry types using GraphQLObjectType_fields hook
+- [x] T041 [US3] Implement x and y field plans in src/PostgisPointFieldsPlugin.ts using ST_X and ST_Y PostGIS functions
+- [x] T042 [US3] Implement z field plan in src/PostgisPointFieldsPlugin.ts using ST_Z PostGIS function (conditional on hasZ)
+- [x] T043 [US3] Create src/PostgisLineStringFieldsPlugin.ts to add points array field to LineString types
+- [x] T044 [US3] Implement points field plan in src/PostgisLineStringFieldsPlugin.ts to extract coordinates from GeoJSON or use ST_DumpPoints
+- [x] T045 [US3] Create src/PostgisPolygonFieldsPlugin.ts to add exterior and interiors fields to Polygon types
+- [x] T046 [US3] Implement exterior and interiors field plans in src/PostgisPolygonFieldsPlugin.ts to extract rings from GeoJSON
+- [x] T047 [US3] Update src/index.ts to include Point, LineString, and Polygon field plugins
 
 **Checkpoint**: At this point, User Stories 1, 2, AND 3 should all work independently - developers can query PostGIS data with direct coordinate access
 
