@@ -43,11 +43,13 @@ export const PostgisCodecPlugin: GraphileConfig.Plugin = {
         // Check if PostGIS is available - access helpers from postgis namespace
         const postgisHelpers = (info.helpers as any).postgis;
         if (!postgisHelpers) {
+          debug("PostGIS helpers not available");
           return; // PostGIS extension plugin not loaded
         }
 
         const isPostGISAvailable = postgisHelpers.isPostGISAvailable(serviceName);
         if (!isPostGISAvailable) {
+          debug(`PostGIS not available for service: ${serviceName}`);
           return; // Let other plugins handle it
         }
 
@@ -55,6 +57,9 @@ export const PostgisCodecPlugin: GraphileConfig.Plugin = {
         const geographyType = postgisHelpers.getGeographyType(serviceName);
 
         if (!geometryType || !geographyType) {
+          debug(
+            `PostGIS types not found - geometry: ${!!geometryType}, geography: ${!!geographyType}`
+          );
           return; // PostGIS types not found
         }
 
@@ -69,10 +74,25 @@ export const PostgisCodecPlugin: GraphileConfig.Plugin = {
             ? parseInt(typeModifier, 10) || null
             : typeModifier ?? null;
 
-        if (
+        // Debug logging for geography type matching
+        if (pgType.typname === "geography") {
+          debug(
+            `Checking geography type: namespace=${namespace?.nspname}, geographyNamespace=${geographyNamespace?.nspname}, typnamespace=${pgType.typnamespace}, geographyType.typnamespace=${geographyType.typnamespace}`
+          );
+        }
+
+        // Check by both namespace name and namespace ID for robustness
+        const isGeometryType =
           pgType.typname === "geometry" &&
-          namespace?.nspname === geometryNamespace?.nspname
-        ) {
+          (namespace?.nspname === geometryNamespace?.nspname ||
+            pgType.typnamespace === geometryType.typnamespace);
+
+        const isGeographyType =
+          pgType.typname === "geography" &&
+          (namespace?.nspname === geographyNamespace?.nspname ||
+            pgType.typnamespace === geographyType.typnamespace);
+
+        if (isGeometryType) {
           debug(
             `Creating codec for geometry type (modifier: ${modifierNumber})`
           );
@@ -82,10 +102,7 @@ export const PostgisCodecPlugin: GraphileConfig.Plugin = {
             String(pgType.oid)
           );
           event.pgCodec = codec;
-        } else if (
-          pgType.typname === "geography" &&
-          namespace?.nspname === geographyNamespace?.nspname
-        ) {
+        } else if (isGeographyType) {
           debug(
             `Creating codec for geography type (modifier: ${modifierNumber})`
           );

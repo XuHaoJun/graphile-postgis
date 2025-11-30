@@ -17,5 +17,5 @@ psql "$TEST_DATABASE_URL" -f __tests__/fixtures/schema.sql
 
 # Run Jest tests
 echo "Running tests..."
-jest "$@"
+npx jest "$@"
 

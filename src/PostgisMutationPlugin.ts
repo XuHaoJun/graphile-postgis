@@ -45,8 +45,28 @@ export const PostgisMutationPlugin: GraphileConfig.Plugin = {
           [originalSqlValueWithCodec, sqlValueWithPostGISCodec]
         );
 
-        // Replace sqlValueWithCodec in dataplanPg
-        (dataplanPg as any).sqlValueWithCodec = customSqlValueWithCodec;
+        // Replace sqlValueWithCodec in dataplanPg using defineProperty to override getter
+        try {
+          Object.defineProperty(dataplanPg, "sqlValueWithCodec", {
+            value: customSqlValueWithCodec,
+            writable: true,
+            configurable: true,
+            enumerable: true,
+          });
+        } catch (e) {
+          // If defineProperty fails, try direct assignment (may fail if property is read-only)
+          console.warn(
+            "PostgisMutationPlugin: Could not override sqlValueWithCodec using defineProperty, trying direct assignment"
+          );
+          try {
+            (dataplanPg as any).sqlValueWithCodec = customSqlValueWithCodec;
+          } catch (e2) {
+            console.error(
+              "PostgisMutationPlugin: Failed to override sqlValueWithCodec. Mutations may not work correctly.",
+              e2
+            );
+          }
+        }
 
         return build;
       },

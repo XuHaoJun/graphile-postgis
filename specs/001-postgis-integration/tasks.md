@@ -62,9 +62,9 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T015 [P] [US1] Create unit test for PostGIS extension detection in __tests__/unit/extension.test.ts
-- [ ] T016 [P] [US1] Create integration test for basic geometry query in __tests__/integration/queries.test.ts (tests Point geometry query returns GeoJSON)
-- [ ] T017 [P] [US1] Create snapshot test for GraphQL schema generation in __tests__/integration/schema.test.ts
+- [x] T015 [P] [US1] Create unit test for PostGIS extension detection in __tests__/unit/extension.test.ts
+- [x] T016 [P] [US1] Create integration test for basic geometry query in __tests__/integration/queries.test.ts (tests Point geometry query returns GeoJSON)
+- [x] T017 [P] [US1] Create snapshot test for GraphQL schema generation in __tests__/integration/schema.test.ts
 
 ### Implementation for User Story 1
 
@@ -92,10 +92,10 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T027 [P] [US2] Create unit test for GeoJSON validation in __tests__/unit/validation.test.ts (test invalid GeoJSON returns specific errors)
-- [ ] T028 [P] [US2] Create integration test for mutation create in __tests__/integration/mutations.test.ts (test creating record with Point geometry)
-- [ ] T029 [P] [US2] Create integration test for mutation update in __tests__/integration/mutations.test.ts (test updating geometry column)
-- [ ] T030 [P] [US2] Create integration test for mutation null handling in __tests__/integration/mutations.test.ts (test setting geometry to null)
+- [x] T027 [P] [US2] Create unit test for GeoJSON validation in __tests__/unit/validation.test.ts (test invalid GeoJSON returns specific errors)
+- [x] T028 [P] [US2] Create integration test for mutation create in __tests__/integration/mutations.test.ts (test creating record with Point geometry)
+- [x] T029 [P] [US2] Create integration test for mutation update in __tests__/integration/mutations.test.ts (test updating geometry column)
+- [x] T030 [P] [US2] Create integration test for mutation null handling in __tests__/integration/mutations.test.ts (test setting geometry to null)
 
 ### Implementation for User Story 2
 
@@ -104,7 +104,7 @@
 - [x] T033 [US2] Enhance GeoJSON validation in src/validation.ts to provide specific error messages with field names, coordinate issues, and type mismatches
 - [x] T034 [US2] Register GeoJSON as input type for geometry/geography columns in src/PostgisTypesPlugin.ts
 - [x] T035 [US2] Add error handling for invalid GeoJSON in mutations with detailed error messages in src/codec.ts
-- [ ] T036 [US2] Test SRID transformation with different source and target SRIDs in __tests__/integration/mutations.test.ts
+- [x] T036 [US2] Test SRID transformation with different source and target SRIDs in __tests__/integration/mutations.test.ts
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently - developers can query and mutate PostGIS data
 
@@ -120,9 +120,9 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T037 [P] [US3] Create integration test for Point x/y fields in __tests__/integration/queries.test.ts (test Point geometry returns x, y, srid fields)
-- [ ] T038 [P] [US3] Create integration test for Point z field in __tests__/integration/queries.test.ts (test Point with Z coordinate returns z field)
-- [ ] T039 [P] [US3] Create integration test for LineString points field in __tests__/integration/queries.test.ts (test LineString returns points array)
+- [x] T037 [P] [US3] Create integration test for Point x/y fields in __tests__/integration/queries.test.ts (test Point geometry returns x, y, srid fields)
+- [x] T038 [P] [US3] Create integration test for Point z field in __tests__/integration/queries.test.ts (test Point with Z coordinate returns z field)
+- [x] T039 [P] [US3] Create integration test for LineString points field in __tests__/integration/queries.test.ts (test LineString returns points array)
 
 ### Implementation for User Story 3
 
@@ -149,11 +149,11 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T048 [P] [US4] Create integration test for MultiPoint in __tests__/integration/queries.test.ts (test MultiPoint returns points array)
-- [ ] T049 [P] [US4] Create integration test for MultiLineString in __tests__/integration/queries.test.ts (test MultiLineString returns lineStrings array)
-- [ ] T050 [P] [US4] Create integration test for MultiPolygon in __tests__/integration/queries.test.ts (test MultiPolygon returns polygons array)
-- [ ] T051 [P] [US4] Create integration test for GeometryCollection in __tests__/integration/queries.test.ts (test GeometryCollection returns geometries array)
-- [ ] T052 [P] [US4] Create integration test for unconstrained geometry in __tests__/integration/queries.test.ts (test dynamic type detection per row)
+- [x] T048 [P] [US4] Create integration test for MultiPoint in __tests__/integration/queries.test.ts (test MultiPoint returns points array)
+- [x] T049 [P] [US4] Create integration test for MultiLineString in __tests__/integration/queries.test.ts (test MultiLineString returns lineStrings array)
+- [x] T050 [P] [US4] Create integration test for MultiPolygon in __tests__/integration/queries.test.ts (test MultiPolygon returns polygons array)
+- [x] T051 [P] [US4] Create integration test for GeometryCollection in __tests__/integration/queries.test.ts (test GeometryCollection returns geometries array)
+- [x] T052 [P] [US4] Create integration test for unconstrained geometry in __tests__/integration/queries.test.ts (test dynamic type detection per row)
 
 ### Implementation for User Story 4
 

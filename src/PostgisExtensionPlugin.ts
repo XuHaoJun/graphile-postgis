@@ -81,48 +81,54 @@ export const PostgisExtensionPlugin: GraphileConfig.Plugin = {
           debug(`PostGIS extension detected in service: ${serviceName}`);
           info.state.postgisExtension = entity;
           info.state.postgisDetected = true;
+          // Types will be found via pgIntrospection_type hook
+        }
+      },
+      async pgIntrospection_type(
+        info: GatherPluginContext<State, Record<string, never>>,
+        event: { entity: PgType; serviceName: string }
+      ) {
+        const { entity: pgType, serviceName } = event;
+        
+        // Early return if not geometry or geography
+        if (pgType.typname !== "geometry" && pgType.typname !== "geography") {
+          return;
+        }
 
-          // Find geometry and geography types in the same namespace
-          // Access introspection via the helpers (pgIntrospection namespace)
-          const introspection = await (info.helpers as any).pgIntrospection?.getIntrospection(
-            serviceName
-          );
-          if (!introspection) {
-            return;
-          }
-          // Get namespace using helpers
-          const namespace = await (info.helpers as any).pgIntrospection?.getNamespace(
-            serviceName,
-            entity.extnamespace
-          );
-          if (namespace) {
-            const geometryType = introspection.types.find(
-              (t: PgType) =>
-                t.typname === "geometry" &&
-                t.getNamespace()?.nspname === namespace.nspname
+        // Get PostGIS extension dynamically - this works even though extension hook runs after type hook
+        // because getExtensionByName accesses the introspection results which are already loaded
+        const postgisExtension = await (info.helpers as any).pgIntrospection?.getExtensionByName(
+          serviceName,
+          "postgis"
+        );
+
+        if (!postgisExtension) {
+          // PostGIS extension not found, skip this type
+          return;
+        }
+
+        // Direct comparison of namespace IDs - same pattern as citext, hstore, ltree plugins
+        // Compare namespace IDs directly (no need to get namespace objects)
+        const namespaceMatches =
+          String(pgType.typnamespace) === String(postgisExtension.extnamespace);
+
+        if (namespaceMatches) {
+          const namespace = pgType.getNamespace();
+          if (pgType.typname === "geometry") {
+            info.state.geometryType = pgType;
+            debug(
+              `Geometry type found: ${pgType.typname} (id: ${pgType._id}) in namespace ${namespace?.nspname || "unknown"}`
             );
-            const geographyType = introspection.types.find(
-              (t: PgType) =>
-                t.typname === "geography" &&
-                t.getNamespace()?.nspname === namespace.nspname
+          } else if (pgType.typname === "geography") {
+            info.state.geographyType = pgType;
+            debug(
+              `Geography type found: ${pgType.typname} (id: ${pgType._id}) in namespace ${namespace?.nspname || "unknown"}`
             );
-
-            if (geometryType) {
-              info.state.geometryType = geometryType;
-              debug(`Geometry type found: ${geometryType.typname}`);
-            }
-            if (geographyType) {
-              info.state.geographyType = geographyType;
-              debug(`Geography type found: ${geographyType.typname}`);
-            }
-
-            if (!geometryType || !geographyType) {
-              console.warn(
-                "PostGIS extension detected, but geometry/geography types not found. " +
-                  "PostGIS types will be exposed as generic types."
-              );
-            }
           }
+        } else {
+          debug(
+            `Type ${pgType.typname} namespace mismatch: typnamespace=${pgType.typnamespace} vs extnamespace=${postgisExtension.extnamespace}`
+          );
         }
       },
     },

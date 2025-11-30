@@ -36,8 +36,9 @@ export function createPostGISCodec(
   undefined
 > {
   // Parse type modifier to get column constraints
+  // -1 means unconstrained (any geometry type), treat as null
   let typeDetails: GISTypeDetails | null = null;
-  if (typeModifier != null) {
+  if (typeModifier != null && typeModifier !== -1) {
     typeDetails = getGISTypeDetails(typeModifier);
   }
 
