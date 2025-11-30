@@ -157,17 +157,17 @@
 
 ### Implementation for User Story 4
 
-- [ ] T053 [US4] Register GraphQL types for MultiPoint, MultiLineString, MultiPolygon, GeometryCollection in src/PostgisTypesPlugin.ts
-- [ ] T054 [US4] Create src/PostgisMultiPointFieldsPlugin.ts to add points array field to MultiPoint types
-- [ ] T055 [US4] Implement points field plan in src/PostgisMultiPointFieldsPlugin.ts
-- [ ] T056 [US4] Create src/PostgisMultiLineStringFieldsPlugin.ts to add lineStrings array field to MultiLineString types
-- [ ] T057 [US4] Implement lineStrings field plan in src/PostgisMultiLineStringFieldsPlugin.ts
-- [ ] T058 [US4] Create src/PostgisMultiPolygonFieldsPlugin.ts to add polygons array field to MultiPolygon types
-- [ ] T059 [US4] Implement polygons field plan in src/PostgisMultiPolygonFieldsPlugin.ts
-- [ ] T060 [US4] Create src/PostgisGeometryCollectionFieldsPlugin.ts to add geometries array field to GeometryCollection types
-- [ ] T061 [US4] Implement geometries field plan in src/PostgisGeometryCollectionFieldsPlugin.ts
+- [x] T053 [US4] Register GraphQL types for MultiPoint, MultiLineString, MultiPolygon, GeometryCollection in src/PostgisTypesPlugin.ts (already handled by GeoJSON scalar mapping)
+- [x] T054 [US4] Create src/PostgisMultiPointFieldsPlugin.ts to add points array field to MultiPoint types
+- [x] T055 [US4] Implement points field plan in src/PostgisMultiPointFieldsPlugin.ts
+- [x] T056 [US4] Create src/PostgisMultiLineStringFieldsPlugin.ts to add lineStrings array field to MultiLineString types
+- [x] T057 [US4] Implement lineStrings field plan in src/PostgisMultiLineStringFieldsPlugin.ts
+- [x] T058 [US4] Create src/PostgisMultiPolygonFieldsPlugin.ts to add polygons array field to MultiPolygon types
+- [x] T059 [US4] Implement polygons field plan in src/PostgisMultiPolygonFieldsPlugin.ts
+- [x] T060 [US4] Create src/PostgisGeometryCollectionFieldsPlugin.ts to add geometries array field to GeometryCollection types
+- [x] T061 [US4] Implement geometries field plan in src/PostgisGeometryCollectionFieldsPlugin.ts
 - [ ] T062 [US4] Implement dynamic type detection for unconstrained geometry columns in src/codec.ts (use geometrytype() function at query time)
-- [ ] T063 [US4] Update src/index.ts to include all Multi* and GeometryCollection field plugins
+- [x] T063 [US4] Update src/index.ts to include all Multi* and GeometryCollection field plugins
 
 **Checkpoint**: All user stories should now be independently functional - full PostGIS geometry type support
 

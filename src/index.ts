@@ -8,6 +8,10 @@ import { PostgisMutationPlugin } from "./PostgisMutationPlugin";
 import { PostgisPointFieldsPlugin } from "./PostgisPointFieldsPlugin";
 import { PostgisLineStringFieldsPlugin } from "./PostgisLineStringFieldsPlugin";
 import { PostgisPolygonFieldsPlugin } from "./PostgisPolygonFieldsPlugin";
+import { PostgisMultiPointFieldsPlugin } from "./PostgisMultiPointFieldsPlugin";
+import { PostgisMultiLineStringFieldsPlugin } from "./PostgisMultiLineStringFieldsPlugin";
+import { PostgisMultiPolygonFieldsPlugin } from "./PostgisMultiPolygonFieldsPlugin";
+import { PostgisGeometryCollectionFieldsPlugin } from "./PostgisGeometryCollectionFieldsPlugin";
 
 /**
  * Main PostGIS plugin preset for PostGraphile v5
@@ -41,6 +45,10 @@ export const postgisPlugin: GraphileConfig.Preset = {
     PostgisPointFieldsPlugin,
     PostgisLineStringFieldsPlugin,
     PostgisPolygonFieldsPlugin,
+    PostgisMultiPointFieldsPlugin,
+    PostgisMultiLineStringFieldsPlugin,
+    PostgisMultiPolygonFieldsPlugin,
+    PostgisGeometryCollectionFieldsPlugin,
   ],
 };
 
@@ -56,6 +64,10 @@ export { PostgisMutationPlugin } from "./PostgisMutationPlugin";
 export { PostgisPointFieldsPlugin } from "./PostgisPointFieldsPlugin";
 export { PostgisLineStringFieldsPlugin } from "./PostgisLineStringFieldsPlugin";
 export { PostgisPolygonFieldsPlugin } from "./PostgisPolygonFieldsPlugin";
+export { PostgisMultiPointFieldsPlugin } from "./PostgisMultiPointFieldsPlugin";
+export { PostgisMultiLineStringFieldsPlugin } from "./PostgisMultiLineStringFieldsPlugin";
+export { PostgisMultiPolygonFieldsPlugin } from "./PostgisMultiPolygonFieldsPlugin";
+export { PostgisGeometryCollectionFieldsPlugin } from "./PostgisGeometryCollectionFieldsPlugin";
 
 // Export utilities
 export { getGISTypeDetails, getGISTypeModifier, getGISTypeName } from "./utils";
