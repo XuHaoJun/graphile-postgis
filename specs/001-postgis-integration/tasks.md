@@ -70,13 +70,13 @@
 
 - [x] T018 [US1] Create src/validation.ts with GeoJSON validation functions (validateGeoJSON structure, coordinates, type matching)
 - [x] T019 [US1] Create src/PostgisScalarPlugin.ts to register GeoJSON scalar type during init hook in src/PostgisScalarPlugin.ts
-- [ ] T020 [US1] Create src/codec.ts with custom PgCodec implementation for geometry/geography types (fromPg method for querying)
-- [ ] T021 [US1] Create src/PostgisCodecPlugin.ts to register custom codec during gather phase in src/PostgisCodecPlugin.ts
-- [ ] T022 [US1] Create src/PostgisTypesPlugin.ts to register base GeometryInterface and basic geometry GraphQL types (Point, LineString, Polygon) during init hook
-- [ ] T023 [US1] Implement codec fromPg method in src/codec.ts to generate SQL with ST_AsGeoJSON, ST_SRID, geometrytype functions
-- [ ] T024 [US1] Implement GraphQL type registration for geometry and geography columns in src/PostgisTypesPlugin.ts
-- [ ] T025 [US1] Create src/index.ts to export main plugin preset combining all sub-plugins
-- [ ] T026 [US1] Add error handling for null geometry values in queries in src/codec.ts
+- [x] T020 [US1] Create src/codec.ts with custom PgCodec implementation for geometry/geography types (fromPg method for querying)
+- [x] T021 [US1] Create src/PostgisCodecPlugin.ts to register custom codec during gather phase in src/PostgisCodecPlugin.ts
+- [x] T022 [US1] Create src/PostgisTypesPlugin.ts to register base GeometryInterface and basic geometry GraphQL types (Point, LineString, Polygon) during init hook
+- [x] T023 [US1] Implement codec fromPg method in src/codec.ts to generate SQL with ST_AsGeoJSON, ST_SRID, geometrytype functions
+- [x] T024 [US1] Implement GraphQL type registration for geometry and geography columns in src/PostgisTypesPlugin.ts
+- [x] T025 [US1] Create src/index.ts to export main plugin preset combining all sub-plugins
+- [x] T026 [US1] Add error handling for null geometry values in queries in src/codec.ts
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently - developers can query PostGIS columns and receive GeoJSON
 

@@ -46,7 +46,7 @@ export const PostgisInflectionPlugin: GraphileConfig.Plugin = {
 
   inflection: {
     add: {
-      gisType(preset, codec, subtype, hasZ, hasM) {
+      gisType(_preset, codec, subtype, hasZ, hasM) {
         return this.upperCamelCase(
           [
             codec.name,
@@ -58,10 +58,10 @@ export const PostgisInflectionPlugin: GraphileConfig.Plugin = {
             .join("-")
         );
       },
-      gisInterfaceName(preset, codec) {
+      gisInterfaceName(_preset, codec) {
         return this.upperCamelCase(`${codec.name}-interface`);
       },
-      gisDimensionInterfaceName(preset, codec, hasZ, hasM) {
+      gisDimensionInterfaceName(_preset, codec, hasZ, hasM) {
         return this.upperCamelCase(
           [
             codec.name,
@@ -76,13 +76,13 @@ export const PostgisInflectionPlugin: GraphileConfig.Plugin = {
       geojsonFieldName() {
         return `geojson`;
       },
-      gisXFieldName(preset, codec) {
+      gisXFieldName(_preset, codec) {
         return codec.name === "geography" ? "longitude" : "x";
       },
-      gisYFieldName(preset, codec) {
+      gisYFieldName(_preset, codec) {
         return codec.name === "geography" ? "latitude" : "y";
       },
-      gisZFieldName(preset, codec) {
+      gisZFieldName(_preset, codec) {
         return codec.name === "geography" ? "height" : "z";
       },
     },

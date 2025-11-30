@@ -1,5 +1,4 @@
 import type { GraphileConfig } from "graphile-config";
-import { EXPORTABLE } from "graphile-build";
 import type { GraphQLScalarTypeConfig } from "graphql";
 
 const { version } = require("../package.json");
@@ -18,15 +17,12 @@ declare global {
 export const PostgisScalarPlugin: GraphileConfig.Plugin = {
   name: "PostgisScalarPlugin",
   version,
+  after: ["CommonTypesPlugin"],
 
   schema: {
     hooks: {
       init(_, build) {
-        const {
-          inflection,
-          stringTypeSpec,
-          graphql: { Kind, GraphQLError },
-        } = build;
+        const { stringTypeSpec } = build;
 
         const geoJSONTypeName = "GeoJSON";
 

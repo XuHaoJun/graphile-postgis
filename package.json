@@ -38,13 +38,13 @@
   },
   "homepage": "https://github.com/graphile/postgis-v5#readme",
   "peerDependencies": {
-    "postgraphile": "^5.0.0-rc",
-    "graphile-build": "^5.0.0-rc",
-    "graphile-build-pg": "^5.0.0-rc",
     "@dataplan/pg": "^1.0.0-rc",
     "grafast": "^1.0.0-rc",
+    "graphile-build": "^5.0.0-rc",
+    "graphile-build-pg": "^5.0.0-rc",
+    "graphql": "^16.9.0",
     "pg-sql2": "^5.0.0-rc",
-    "graphql": "^16.9.0"
+    "postgraphile": "^5.0.0-rc"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.11",
@@ -52,6 +52,7 @@
     "@babel/preset-env": "^7.22.14",
     "@babel/preset-typescript": "^7.22.11",
     "@tsconfig/node20": "^20.1.4",
+    "@types/debug": "^4.1.12",
     "@types/jest": "^29.5.0",
     "@types/node": "^20.0.0",
     "@types/pg": "^8.11.11",
@@ -77,10 +78,10 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "debug": "^4.4.3",
     "tslib": "^2.5.0"
   },
   "files": [
     "dist"
   ]
 }
-

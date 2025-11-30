@@ -61,7 +61,7 @@ export function validateGeoJSONStructure(
 
 export function validateCoordinates(
   coordinates: any,
-  expectedDimensions: number = 2
+  _expectedDimensions: number = 2
 ): GeoJSONValidationError[] {
   const errors: GeoJSONValidationError[] = [];
 

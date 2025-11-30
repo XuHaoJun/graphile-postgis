@@ -1,5 +1,6 @@
 import type { GraphileConfig } from "graphile-config";
 import { gatherConfig } from "graphile-build";
+import type { GatherPluginContext } from "graphile-build";
 import type { PgExtension, PgType } from "pg-introspection";
 import debugFactory from "debug";
 
@@ -42,34 +43,58 @@ export const PostgisExtensionPlugin: GraphileConfig.Plugin = {
       postgisDetected: false,
     }),
     helpers: {
-      isPostGISAvailable(info, serviceName: string): boolean {
+      isPostGISAvailable(
+        info: GatherPluginContext<State, Record<string, never>>,
+        _serviceName: string
+      ): boolean {
         // Check if PostGIS extension was detected for this service
         // For now, we check the first service's state
         // TODO: Support multiple services
         return info.state.postgisDetected;
       },
-      getGeometryType(info, serviceName: string): PgType | null {
+      getGeometryType(
+        info: GatherPluginContext<State, Record<string, never>>,
+        _serviceName: string
+      ): PgType | null {
         return info.state.geometryType;
       },
-      getGeographyType(info, serviceName: string): PgType | null {
+      getGeographyType(
+        info: GatherPluginContext<State, Record<string, never>>,
+        _serviceName: string
+      ): PgType | null {
         return info.state.geographyType;
       },
-      getPostGISExtension(info, serviceName: string): PgExtension | null {
+      getPostGISExtension(
+        info: GatherPluginContext<State, Record<string, never>>,
+        _serviceName: string
+      ): PgExtension | null {
         return info.state.postgisExtension;
       },
     },
     hooks: {
-      async pgIntrospection_extension(info, { entity, serviceName }) {
+      async pgIntrospection_extension(
+        info: GatherPluginContext<State, Record<string, never>>,
+        event: { entity: PgExtension; serviceName: string }
+      ) {
+        const { entity, serviceName } = event;
         if (entity.extname === "postgis") {
           debug(`PostGIS extension detected in service: ${serviceName}`);
           info.state.postgisExtension = entity;
           info.state.postgisDetected = true;
 
           // Find geometry and geography types in the same namespace
-          const introspection = await info.helpers.pgIntrospection.getIntrospection(
+          // Access introspection via the helpers (pgIntrospection namespace)
+          const introspection = await (info.helpers as any).pgIntrospection?.getIntrospection(
             serviceName
           );
-          const namespace = entity.getNamespace();
+          if (!introspection) {
+            return;
+          }
+          // Get namespace using helpers
+          const namespace = await (info.helpers as any).pgIntrospection?.getNamespace(
+            serviceName,
+            entity.extnamespace
+          );
           if (namespace) {
             const geometryType = introspection.types.find(
               (t: PgType) =>
