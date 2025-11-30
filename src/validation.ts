@@ -1,14 +1,31 @@
 /**
- * GeoJSON validation functions
- * Validates GeoJSON structure according to RFC 7946
+ * GeoJSON validation functions.
+ * 
+ * Validates GeoJSON structure according to RFC 7946 specification.
+ * Provides detailed error messages for invalid GeoJSON input.
  */
 
+/**
+ * Represents a GeoJSON validation error with field-level details.
+ */
 export interface GeoJSONValidationError {
+  /** The field name where the error occurred */
   field: string;
+  /** Human-readable error message */
   message: string;
+  /** The invalid value that caused the error (optional) */
   value?: any;
 }
 
+/**
+ * Validates the basic structure of a GeoJSON object.
+ * 
+ * Checks that the value is an object with a valid `type` property.
+ * Does not validate coordinates or geometry-specific constraints.
+ * 
+ * @param value - The value to validate
+ * @returns Array of validation errors (empty if valid)
+ */
 export function validateGeoJSONStructure(
   value: any
 ): GeoJSONValidationError[] {
@@ -59,6 +76,16 @@ export function validateGeoJSONStructure(
   return errors;
 }
 
+/**
+ * Validates GeoJSON coordinates structure.
+ * 
+ * Ensures coordinates are arrays of numbers with proper nesting depth
+ * based on the geometry type.
+ * 
+ * @param coordinates - The coordinates array to validate
+ * @param _expectedDimensions - Expected number of dimensions (2, 3, or 4) - currently unused
+ * @returns Array of validation errors (empty if valid)
+ */
 export function validateCoordinates(
   coordinates: any,
   _expectedDimensions: number = 2
@@ -106,6 +133,23 @@ export function validateCoordinates(
   return errors;
 }
 
+/**
+ * Validates a complete GeoJSON object.
+ * 
+ * Performs structure validation, coordinate validation, and optional type checking.
+ * 
+ * @param value - The GeoJSON object to validate
+ * @param expectedType - Optional expected geometry type (e.g., "Point", "LineString")
+ * @returns Array of validation errors (empty if valid)
+ * 
+ * @example
+ * ```ts
+ * const errors = validateGeoJSON({ type: "Point", coordinates: [1, 2] }, "Point");
+ * if (errors.length > 0) {
+ *   console.error("Invalid GeoJSON:", errors);
+ * }
+ * ```
+ */
 export function validateGeoJSON(
   value: any,
   expectedType?: string

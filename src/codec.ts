@@ -6,7 +6,21 @@ import { validateGeoJSON } from "./validation";
 import type { GISTypeDetails } from "./types";
 
 /**
- * Creates a PgCodec for a PostGIS geometry or geography type
+ * Creates a PgCodec for a PostGIS geometry or geography type.
+ * 
+ * This function creates a custom codec that handles conversion between
+ * PostgreSQL geometry/geography types and JavaScript GeoJSON objects.
+ * 
+ * @param typeName - Either "geometry" or "geography"
+ * @param typeModifier - PostgreSQL type modifier (from pg_attribute.atttypmod)
+ * @param pgTypeOid - PostgreSQL type OID for the geometry/geography type
+ * @returns A PgCodec configured for PostGIS types
+ * 
+ * @example
+ * ```ts
+ * const codec = createPostGISCodec("geometry", 1107460, "12345");
+ * // Creates a codec for geometry(Point, 4326)
+ * ```
  */
 export function createPostGISCodec(
   typeName: "geometry" | "geography",
@@ -41,7 +55,19 @@ export function createPostGISCodec(
     }
     try {
       // ST_AsGeoJSON returns a JSON string, parse it
-      return JSON.parse(value);
+      const geojson = JSON.parse(value);
+      
+      // Warn about large geometries (> 1MB serialized)
+      const serializedSize = JSON.stringify(geojson).length;
+      const oneMB = 1024 * 1024;
+      if (serializedSize > oneMB) {
+        console.warn(
+          `Large geometry detected: ${Math.round(serializedSize / 1024)}KB serialized. ` +
+          `This may impact query performance. Consider using ST_Simplify or ST_SimplifyPreserveTopology.`
+        );
+      }
+      
+      return geojson;
     } catch (e) {
       throw new Error(
         `Failed to parse GeoJSON from PostGIS: ${e instanceof Error ? e.message : String(e)}`

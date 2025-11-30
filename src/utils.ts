@@ -1,6 +1,20 @@
 import { GISTypeDetails, Subtype } from "./types";
 import { GIS_SUBTYPE_NAME } from "./constants";
 
+/**
+ * Extracts PostGIS type details from a type modifier integer.
+ * 
+ * Type modifier format: [SRID (16 bits)][Z flag (1 bit)][M flag (1 bit)][subtype (6 bits)]
+ * 
+ * @param modifier - The PostgreSQL type modifier integer from pg_attribute.atttypmod
+ * @returns An object containing subtype, hasZ, hasM, and srid information
+ * 
+ * @example
+ * ```ts
+ * const details = getGISTypeDetails(1107460);
+ * // Returns: { subtype: 1, hasZ: false, hasM: false, srid: 4326 }
+ * ```
+ */
 export const getGISTypeDetails = (modifier: number): GISTypeDetails => {
   const allZeroesHopefully = modifier >> 24;
   if (allZeroesHopefully !== 0) {
@@ -40,6 +54,24 @@ export const getGISTypeDetails = (modifier: number): GISTypeDetails => {
   };
 };
 
+/**
+ * Constructs a PostGIS type modifier integer from type details.
+ * 
+ * This is the inverse of `getGISTypeDetails` - it takes type information
+ * and constructs the PostgreSQL type modifier value.
+ * 
+ * @param subtype - The geometry subtype (Point, LineString, etc.)
+ * @param hasZ - Whether the geometry has Z coordinates
+ * @param hasM - Whether the geometry has M (measure) coordinates
+ * @param srid - The Spatial Reference System Identifier
+ * @returns The type modifier integer suitable for PostgreSQL
+ * 
+ * @example
+ * ```ts
+ * const modifier = getGISTypeModifier(1, false, false, 4326);
+ * // Returns: 1107460 (for geometry(Point, 4326))
+ * ```
+ */
 export const getGISTypeModifier = (
   subtype: Subtype,
   hasZ: boolean,
@@ -59,6 +91,21 @@ export const getGISTypeModifier = (
   );
 };
 
+/**
+ * Gets the string name of a geometry subtype.
+ * 
+ * @param subtype - The geometry subtype constant
+ * @param hasZ - Whether the geometry has Z coordinates
+ * @param hasM - Whether the geometry has M (measure) coordinates
+ * @returns The human-readable type name (e.g., "Point", "LineStringZ", "PolygonZM")
+ * 
+ * @example
+ * ```ts
+ * getGISTypeName(1, false, false); // Returns "Point"
+ * getGISTypeName(1, true, false);  // Returns "PointZ"
+ * getGISTypeName(3, true, true);   // Returns "PolygonZM"
+ * ```
+ */
 export const getGISTypeName = (
   subtype: Subtype,
   hasZ: boolean,

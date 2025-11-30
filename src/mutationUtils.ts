@@ -3,10 +3,20 @@ import { sql } from "pg-sql2";
 import type { PgCodec } from "@dataplan/pg";
 
 /**
- * Creates SQL for PostGIS mutations by wrapping GeoJSON with ST_GeomFromGeoJSON/ST_GeogFromGeoJSON
- * 
+ * Creates SQL for PostGIS mutations by wrapping GeoJSON with ST_GeomFromGeoJSON/ST_GeogFromGeoJSON.
+ *
  * This function should be used instead of sqlValueWithCodec for PostGIS codecs in mutations.
  * It handles SRID transformation if needed.
+ * 
+ * @param value - The GeoJSON value to convert (already validated and stringified)
+ * @param codec - The PostGIS codec (geometry or geography)
+ * @returns SQL fragment that converts the GeoJSON string to PostGIS geometry/geography
+ * 
+ * @example
+ * ```ts
+ * const sql = sqlValueWithPostGISCodec(geoJSONString, geometryCodec);
+ * // Returns: sql`ST_GeomFromGeoJSON(${sql.value(geoJSONString)}::text, 4326)::geometry`
+ * ```
  */
 export function sqlValueWithPostGISCodec(
   value: unknown,

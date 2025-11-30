@@ -1,7 +1,7 @@
 {
   "name": "@graphile/postgis-v5",
   "version": "0.1.0",
-  "description": "PostGIS support for PostGraphile v5",
+  "description": "PostGIS support for PostGraphile v5 - Query and mutate spatial data using GeoJSON",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -27,9 +27,17 @@
     "plugin",
     "postgis",
     "gis",
+    "geospatial",
+    "geography",
+    "geometry",
+    "geojson",
     "postgresql",
+    "postgres",
     "graphql",
-    "v5"
+    "v5",
+    "spatial",
+    "maps",
+    "coordinates"
   ],
   "author": "Graphile Contributors",
   "license": "MIT",
