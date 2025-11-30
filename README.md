@@ -1,12 +1,10 @@
 # @xuhaojun/graphile-postgis
+[![npm version](https://img.shields.io/npm/v/@xuhaojun/graphile-postgis.svg)](https://www.npmjs.com/package/@xuhaojun/graphile-postgis)
+[![npm downloads](https://img.shields.io/npm/dm/@xuhaojun/graphile-postgis.svg)](https://www.npmjs.com/package/@xuhaojun/graphile-postgis)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 PostGIS support for PostGraphile v5.
 
-[![npm version](https://img.shields.io/npm/v/@xuhaojun/graphile-postgis.svg)](https://www.npmjs.com/package/@xuhaojun/graphile-postgis)
-
-[![npm downloads](https://img.shields.io/npm/dm/@xuhaojun/graphile-postgis.svg)](https://www.npmjs.com/package/@xuhaojun/graphile-postgis)
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
 
