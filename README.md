@@ -2,6 +2,9 @@
 
 PostGIS support for PostGraphile v5.
 
+![npm](https://img.shields.io/npm/dm/@xuhaojun/graphile-postgis)
+![npm](https://img.shields.io/npm/v/@xuhaojun/graphile-postgis)
+
 ## Overview
 
 The original [`@graphile/postgis`](https://github.com/graphile/postgis) plugin was built for PostGraphile v4 and is not compatible with PostGraphile v5. This project is a complete rewrite to leverage the new architecture and features of PostGraphile v5.
